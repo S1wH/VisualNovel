@@ -139,9 +139,6 @@ GameObject:
   - component: {fileID: 33375279}
   - component: {fileID: 33375282}
   - component: {fileID: 33375283}
-  - component: {fileID: 33375285}
-  - component: {fileID: 33375286}
-  - component: {fileID: 33375284}
   - component: {fileID: 33375287}
   - component: {fileID: 33375288}
   - component: {fileID: 33375289}
@@ -170,7 +167,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 73
     y: 64
-    width: 111.85567
+    width: 110.227264
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 1
@@ -195,11 +192,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: -56.72177, y: 235.76016}
+  scrollPos: {x: -67.19173, y: 176.65564}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 400
-  zoom: 0.96999997
+  zoom: 0.88000005
   scrollViewRect:
     serializedVersion: 2
     x: -343
@@ -266,7 +263,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 199.82358
     y: 62.58824
-    width: 127.31959
+    width: 124.99999
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 1
@@ -336,67 +333,6 @@ MonoBehaviour:
   fadeDuration: 1e+12
   waitUntilFinished: 0
   audioSourceOLD: {fileID: 0}
---- !u!114 &33375284
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 33375274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00d03ae0919f04264b018681ed534177, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemId: 5
-  indentLevel: 0
-  _sceneName:
-    stringRef: {fileID: 0}
-    stringVal: Settings
-  loadingImage: {fileID: 0}
-  sceneNameOLD: 
---- !u!114 &33375285
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 33375274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d3d73aef2cfc4f51abf34ac00241f60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nodeRect:
-    serializedVersion: 2
-    x: 88.24095
-    y: 125.47339
-    width: 161.34021
-    height: 40
-  tint: {r: 1, g: 1, b: 1, a: 1}
-  useCustomTint: 0
-  itemId: 4
-  blockName: OpenSettingsMenu
-  description: 
-  eventHandler: {fileID: 33375286}
-  commandList:
-  - {fileID: 33375284}
-  suppressAllAutoSelections: 0
---- !u!114 &33375286
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 33375274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10eaeba5e91be479e95d4fa48679f549, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentBlock: {fileID: 33375285}
-  suppressBlockAutoSelect: 0
-  targetButton: {fileID: 1428182638}
 --- !u!114 &33375287
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -612,7 +548,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 317.5465
     y: 262.178
-    width: 89.17526
+    width: 87.5
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -2373,7 +2309,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1428182639}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 820003921}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1714995209}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1428182639
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2789,10 +2749,10 @@ RectTransform:
   m_Father: {fileID: 241970246}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.28345}
-  m_SizeDelta: {x: 1372, y: 1000}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0.28344727}
+  m_SizeDelta: {x: 1272, y: 902}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1714995211
 MonoBehaviour:
