@@ -207,8 +207,7 @@ MonoBehaviour:
     height: 859
   selectedBlocks:
   - {fileID: 33375280}
-  selectedCommands:
-  - {fileID: 33375282}
+  selectedCommands: []
   variables:
   - {fileID: 33375287}
   description: 
@@ -583,7 +582,7 @@ MonoBehaviour:
     vector3Val: {x: 0, y: 0, z: 0}
 --- !u!114 &33375290
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
