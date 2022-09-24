@@ -167,7 +167,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 73
     y: 64
-    width: 110.227264
+    width: 108.52272
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 1
@@ -263,7 +263,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 199.82358
     y: 62.58824
-    width: 124.99999
+    width: 124.431816
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 1
@@ -833,6 +833,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 241970246}
+  - component: {fileID: 241970247}
   m_Layer: 5
   m_Name: Menu
   m_TagString: Untagged
@@ -865,6 +866,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -0.5}
   m_SizeDelta: {x: -1820, y: -981}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &241970247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241970245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bda43dc3fab07e74e98c9741b1a41a95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &323506165
 GameObject:
   m_ObjectHideFlags: 0
@@ -1269,7 +1282,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 412698114}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 241970247}
+        m_TargetAssemblyTypeName: Menu, Assembly-CSharp
+        m_MethodName: StartNewGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &412698114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2751,8 +2776,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.28344727}
-  m_SizeDelta: {x: 1272, y: 902}
+  m_AnchoredPosition: {x: 0.00004196167, y: 0.0010108948}
+  m_SizeDelta: {x: 1820, y: 981}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1714995211
 MonoBehaviour:

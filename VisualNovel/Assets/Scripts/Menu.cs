@@ -1,5 +1,6 @@
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class Menu : MonoBehaviour
 {
     void Start()
@@ -7,9 +8,8 @@ public class Menu : MonoBehaviour
         EditorSceneManager.preventCrossSceneReferences = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void StartNewGame() 
     {
-        
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }
