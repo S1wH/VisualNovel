@@ -461,7 +461,11 @@ MonoBehaviour:
     serializedVersion: 2
     x: 67
     y: 70
+<<<<<<< Updated upstream
     width: 76.92307
+=======
+    width: 77
+>>>>>>> Stashed changes
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -489,21 +493,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  scrollPos: {x: 179.49086, y: 229.95155}
+  scrollPos: {x: 179.10788, y: 178.44897}
   variablesScrollPos: {x: 0, y: 0}
   variablesExpanded: 1
   blockViewHeight: 508
-  zoom: 0.9100001
+  zoom: 1
   scrollViewRect:
     serializedVersion: 2
     x: -343
     y: -340
     width: 1114
     height: 859
-  selectedBlocks:
-  - {fileID: 600879000}
-  selectedCommands:
-  - {fileID: 600879004}
+  selectedBlocks: []
+  selectedCommands: []
   variables:
   - {fileID: 600879011}
   description: 
@@ -611,7 +613,7 @@ MonoBehaviour:
   audioSourceOLD: {fileID: 0}
 --- !u!114 &600879007
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -641,7 +643,11 @@ MonoBehaviour:
     serializedVersion: 2
     x: -34.658066
     y: 5.0963135
+<<<<<<< Updated upstream
     width: 110.989006
+=======
+    width: 111
+>>>>>>> Stashed changes
     height: 40
   tint: {r: 1, g: 1, b: 1, a: 1}
   useCustomTint: 0
@@ -654,7 +660,7 @@ MonoBehaviour:
   suppressAllAutoSelections: 0
 --- !u!114 &600879010
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -670,7 +676,7 @@ MonoBehaviour:
   variable: {fileID: 600879011}
 --- !u!114 &600879011
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -685,7 +691,7 @@ MonoBehaviour:
   value: 0
 --- !u!114 &600879014
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 2
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
@@ -957,7 +963,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23388362, g: 0.7830189, b: 0.2031417, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
