@@ -7,6 +7,7 @@ public class DialogueBox : MonoBehaviour
 
     public GUIStyle customStyle;
     public string dialogue;
+    private bool gamePaused;
 
     int lineNum;
     DialogueParser dialogueParser;
@@ -19,10 +20,14 @@ public class DialogueBox : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) 
+        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && gamePaused == false) 
         {
             dialogue = dialogueParser.getContent(lineNum);
             lineNum++;
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            gamePaused = true;
         }
     }
 
