@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class GameScriptManager : MonoBehaviour
 {
     public GameObject stopMenu;
-    public bool GamePaused = false;
+    public GameObject settingsMenu;
+    public bool gamePaused = false;
 
     void Start()
     {
@@ -18,16 +18,18 @@ public class GameScriptManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape) ) 
         {
-            if (!GamePaused && !stopMenu.activeSelf)
+            if (!gamePaused && !stopMenu.activeSelf)
             {
                 setGamePause();
                 stopMenu.SetActive(true);
             }
-            else if (GamePaused && stopMenu.activeSelf)
+            else if (gamePaused && stopMenu.activeSelf && !settingsMenu.activeSelf)
             {
                 setGamePause();
                 stopMenu.SetActive(false);
             }
+            else if (gamePaused && stopMenu.activeSelf && settingsMenu.activeSelf)
+                settingsMenu.SetActive(false);
         }
     }
     public void GoToMainMenu() 
@@ -37,9 +39,9 @@ public class GameScriptManager : MonoBehaviour
 
     public void setGamePause() 
     {
-        if (GamePaused)
-            GamePaused = false;
+        if (gamePaused)
+            gamePaused = false;
         else
-            GamePaused = true;
+            gamePaused = true;
     }
 }

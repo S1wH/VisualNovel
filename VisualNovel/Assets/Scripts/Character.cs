@@ -5,17 +5,8 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
 
-    string name = "";
-    Sprite sprite = null; 
-    Sprite[] poses = null;
-    
-    void Start()
-    {
-        
-    }
+    public string characterName = "";
+    public Sprite[] poses = null;
+    public int[] color = new int[3]; 
 
-    void Update()
-    {
-        
-    }
 }

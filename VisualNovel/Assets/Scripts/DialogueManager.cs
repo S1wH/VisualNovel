@@ -9,11 +9,13 @@ public class DialogueManager : MonoBehaviour
     private int lineNum;
     private string dialogue;
     private int pose;
-    private string character;
+    private string characterName;
+
+    private DialogueParser dialogueParser;
 
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
-    DialogueParser dialogueParser;
+    [SerializeField] private TextMeshProUGUI characterText;
     public GameScriptManager GameScriptManager;
 
     void Start()
@@ -26,7 +28,7 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
-        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && GameScriptManager.GamePaused == false) 
+        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && GameScriptManager.gamePaused == false) 
         {
             PLaceNewLine();
         }
@@ -36,8 +38,14 @@ public class DialogueManager : MonoBehaviour
     {
         dialogue = dialogueParser.getContent(lineNum);
         pose = dialogueParser.getPose(lineNum);
-        character = dialogueParser.getName(lineNum);
-        dialogueText.text = dialogue;
-        lineNum++;
+        characterName = dialogueParser.getName(lineNum);
+        if (dialogue != "" && characterName != "")
+        {
+            Character character = GameObject.Find(characterName).GetComponent<Character>();
+            characterText.color = new Color(character.color[0], character.color[1], character.color[2]);
+            dialogueText.text = dialogue;
+            characterText.text = character.characterName;
+            lineNum++;
+        }
     }
 }
