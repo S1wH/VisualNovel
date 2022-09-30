@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameScriptManager : MonoBehaviour
 {
     public GameObject stopMenu;
-    private bool GamePaused = false;
+    public bool GamePaused = false;
 
-    // Start is called before the first frame update
     void Start()
     {
         
@@ -15,10 +16,30 @@ public class GameScriptManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) 
+        if (Input.GetKeyDown(KeyCode.Escape) ) 
         {
-            GamePaused = true;
-            stopMenu.SetActive(true);
+            if (!GamePaused && !stopMenu.activeSelf)
+            {
+                setGamePause();
+                stopMenu.SetActive(true);
+            }
+            else if (GamePaused && stopMenu.activeSelf)
+            {
+                setGamePause();
+                stopMenu.SetActive(false);
+            }
         }
+    }
+    public void GoToMainMenu() 
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
+
+    public void setGamePause() 
+    {
+        if (GamePaused)
+            GamePaused = false;
+        else
+            GamePaused = true;
     }
 }

@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 public class DialogueParser : MonoBehaviour
 {
 
-    List<DialogueLine> Dialogue;
+    List<DialogueLine> Dialogue = new List<DialogueLine>();
     struct DialogueLine
     {
         public string name;
@@ -29,14 +29,7 @@ public class DialogueParser : MonoBehaviour
         string sceneNum = SceneManager.GetActiveScene().buildIndex.ToString();
         file += sceneNum;
         file += ".txt";
-        Dialogue = new List<DialogueLine>();
         LoadDialogue(file);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     void LoadDialogue(string fileName) 
@@ -75,7 +68,7 @@ public class DialogueParser : MonoBehaviour
         return "";
     }
 
-    public int pose(int lineNumber)
+    public int getPose(int lineNumber)
     {
         if (lineNumber < Dialogue.Count)
             return Dialogue[lineNumber].pose;
