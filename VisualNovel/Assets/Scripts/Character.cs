@@ -7,6 +7,5 @@ public class Character : MonoBehaviour
 
     public string characterName = "";
     public Sprite[] poses = null;
-    public int[] color = new int[3]; 
-
+    public int[] color = new int[3];
 }

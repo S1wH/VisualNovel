@@ -785,6 +785,7 @@ GameObject:
   - component: {fileID: 479413467}
   - component: {fileID: 479413469}
   - component: {fileID: 479413468}
+  - component: {fileID: 479413470}
   m_Layer: 5
   m_Name: BackGroundImage
   m_TagString: Untagged
@@ -850,6 +851,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 479413466}
   m_CullTransparentMesh: 1
+--- !u!95 &479413470
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 479413466}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e9293da7a8ea23a4a9ee48868568b329, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &561951375
 GameObject:
   m_ObjectHideFlags: 0
@@ -1635,6 +1656,8 @@ MonoBehaviour:
   stopMenu: {fileID: 1888699104}
   settingsMenu: {fileID: 423505518}
   gamePaused: 0
+  anim: {fileID: 0}
+  changeBg: {fileID: 7400000, guid: 4e7a2c2cca5dedf4294caa2d76476417, type: 2}
 --- !u!4 &1166213260
 Transform:
   m_ObjectHideFlags: 0
@@ -2128,10 +2151,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bbaaf989b69c8f468787da86fbfd84f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameScriptManager: {fileID: 1166213259}
   dialoguePanel: {fileID: 1587346432}
   dialogueText: {fileID: 1776975756}
   characterText: {fileID: 75448015}
-  GameScriptManager: {fileID: 1166213259}
 --- !u!1 &1421172156
 GameObject:
   m_ObjectHideFlags: 0
