@@ -1,21 +1,25 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
-
     private int lineNum;
 
     private string action;
     private string dialogue;
     private int pose;
     private string Name;
-
+        
     private DialogueParser dialogueParser;
 
+    private bool textIsTyping;
+    private float typingSpeed;
+    private Coroutine displayLineCoroutine;
+
+    [SerializeField] private SettingsManager SettingsManager;
     [SerializeField] private GameScriptManager GameScriptManager;
+
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private TextMeshProUGUI characterText;
@@ -27,16 +31,34 @@ public class DialogueManager : MonoBehaviour
         dialogue = "";
         lineNum = 0;
         dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
+
+        // set typing speed to settings value
     }
 
     void Update()
     {
         // check if we can place new line 
-        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && GameScriptManager.gamePaused == false) 
+        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && !textIsTyping) 
         {
             ParsNewLine();
             MakeDialogueAction();
         }
+    }
+
+    public void ClearDialoguePanel()
+    {
+        dialogueText.SetText("");
+        characterText.SetText("");
+    }
+
+    public void HideDialoguePanel()
+    {
+        dialoguePanel.SetActive(false);
+    }
+
+    public void ShowUpDialoguePanel()
+    {
+        dialoguePanel.SetActive(true);
     }
 
     private void MakeDialogueAction() 
@@ -45,6 +67,7 @@ public class DialogueManager : MonoBehaviour
             PlaceText();
         else if (action == "cbg")
             GameScriptManager.ChageBackground(Name);
+        lineNum++;
     }
 
     private void ParsNewLine() 
@@ -59,10 +82,29 @@ public class DialogueManager : MonoBehaviour
     private void PlaceText() 
     {
         // place text inside text box
+        typingSpeed = (1 - SettingsManager.typingValue) / 7;
         Character character = GameObject.Find(Name).GetComponent<Character>();
         characterText.color = new Color(character.color[0], character.color[1], character.color[2]);
-        dialogueText.text = dialogue;
+        if (displayLineCoroutine != null)
+            StopCoroutine(displayLineCoroutine);
+        displayLineCoroutine = StartCoroutine(DisplayLine());
         characterText.text = character.characterName;
-        lineNum++;
+    }
+
+    private IEnumerator DisplayLine()
+    {
+        dialogueText.text = "";
+        textIsTyping = true;
+        foreach (char letter in dialogue.ToCharArray())
+        {
+            /*if (Input.GetMouseButtonDown(0) || Input.GetKeyDown("space"))
+            {
+                dialogueText.text = dialogue;
+                break;
+            }*/
+            dialogueText.text += letter;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+        textIsTyping = false;
     }
 }

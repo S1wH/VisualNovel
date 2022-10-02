@@ -1,18 +1,15 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameScriptManager : MonoBehaviour
 {
-    public GameObject stopMenu;
-    public GameObject settingsMenu;
+    [SerializeField] private GameObject stopMenu;
+    [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private DialogueManager dialogueManager;
 
     public bool gamePaused = false;
-
-    public Animator animator;
-
     void Update()
     {
         // different activities when esc button is pressed
@@ -37,20 +34,61 @@ public class GameScriptManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
-    public void ChageBackground(string name)
-    {
-        Image bgImage = GameObject.Find("BackGroundImage").GetComponent<Image>();
-        Sprite newBgImage = Resources.Load<Sprite>("Sprites/Backgrounds/MainMenu");
-        animator.Play("ChangeBackgrouns");
-        bgImage.overrideSprite = newBgImage;
-    }
-
-    public void setGamePause() 
+    public void setGamePause()
     {
         // set game pause status
         if (gamePaused)
             gamePaused = false;
         else
             gamePaused = true;
+    }
+
+    public void ChageBackground(string name)
+    {
+        setGamePause();
+        string[] names = name.Split(" ");
+        GameObject bg = GameObject.Find(names[0]);
+        GameObject newBg = GameObject.Find(names[1]);
+        dialogueManager.ClearDialoguePanel();
+        dialogueManager.HideDialoguePanel();
+        if (newBg.layer > bg.layer)
+        {
+            Image newBgImage = newBg.GetComponent<Image>();
+            StartCoroutine("FadeUp", newBgImage);
+        }
+        else
+        {
+            Image bgImage = bg.GetComponent<Image>();
+            StartCoroutine("FadeDown", bgImage);
+        }
+        Invoke("ShowDialoguePanel", 2f);
+        Invoke("setGamePause", 2f);
+    }
+
+    private void ShowDialoguePanel()
+    {
+        dialogueManager.ShowUpDialoguePanel();
+    }
+
+    IEnumerator FadeDown(Image bgImage)
+    {
+        for (float f = 1f; f > 0; f -= 0.05f)
+        {
+            Color color = bgImage.color;
+            color.a = f;
+            bgImage.color = color;
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
+
+    IEnumerator FadeUp(Image bgImage)
+    {
+        for (float f = 0f; f <= 1; f += 0.05f)
+        {
+            Color color = bgImage.color;
+            color.a = f;
+            bgImage.color = color;
+            yield return new WaitForSeconds(0.05f);
+        }
     }
 }

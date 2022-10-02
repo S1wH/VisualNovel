@@ -1,3 +1,4 @@
 say;Mark;"Привет, как дела?";0
 say;Darla;"Привет, все хорошо";0
-cbg; MainMenu
+cbg;BackGroundImage BackGroundImage2
+cbg;BackGroundImage2 BackGroundImage
