@@ -1,15 +1,29 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameScriptManager : MonoBehaviour
 {
+    private List<GameObject> backs;
+    private List<string> backsNames;
+
+    private GameObject bg;
+    private GameObject newBg;
+
     [SerializeField] private GameObject stopMenu;
     [SerializeField] private GameObject settingsMenu;
     [SerializeField] private DialogueManager dialogueManager;
+    [SerializeField] private Backgrounds backgrounds;
 
     public bool gamePaused = false;
+
+    private void Start()
+    {
+        backs = backgrounds.backgroundImages;
+        backsNames = backgrounds.backgroundNames;
+    }
     void Update()
     {
         // different activities when esc button is pressed
@@ -47,8 +61,8 @@ public class GameScriptManager : MonoBehaviour
     {
         setGamePause();
         string[] names = name.Split(" ");
-        GameObject bg = GameObject.Find(names[0]);
-        GameObject newBg = GameObject.Find(names[1]);
+        bg = backs[backsNames.IndexOf(names[0])];
+        newBg = backs[backsNames.IndexOf(names[1])];
         dialogueManager.ClearDialoguePanel();
         dialogueManager.HideDialoguePanel();
         if (newBg.layer > bg.layer)
@@ -58,6 +72,7 @@ public class GameScriptManager : MonoBehaviour
         }
         else
         {
+            ChangeColorAlpha(1, newBg.GetComponent<Image>());
             Image bgImage = bg.GetComponent<Image>();
             StartCoroutine("FadeDown", bgImage);
         }
@@ -67,16 +82,22 @@ public class GameScriptManager : MonoBehaviour
 
     private void ShowDialoguePanel()
     {
+        ChangeColorAlpha(0, bg.GetComponent<Image>());
         dialogueManager.ShowUpDialoguePanel();
+    }
+
+    private void ChangeColorAlpha(float val, Image im)
+    {
+        Color color = im.color;
+        color.a = val;
+        im.color = color;
     }
 
     IEnumerator FadeDown(Image bgImage)
     {
         for (float f = 1f; f > 0; f -= 0.05f)
         {
-            Color color = bgImage.color;
-            color.a = f;
-            bgImage.color = color;
+            ChangeColorAlpha(f, bgImage);
             yield return new WaitForSeconds(0.05f);
         }
     }
