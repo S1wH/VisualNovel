@@ -13,6 +13,7 @@ public class DialogueManager : MonoBehaviour
         
     private DialogueParser dialogueParser;
 
+    private int lettersPLaced;
     private bool textIsTyping;
     private float typingSpeed;
     private Coroutine displayLineCoroutine;
@@ -42,6 +43,13 @@ public class DialogueManager : MonoBehaviour
         {
             ParsNewLine();
             MakeDialogueAction();
+        }
+        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && textIsTyping && lettersPLaced > 1)
+        {
+            StopCoroutine(displayLineCoroutine);
+            textIsTyping = false;
+            dialogueText.text = dialogue;
+            lettersPLaced = 0;
         }
     }
 
@@ -97,14 +105,11 @@ public class DialogueManager : MonoBehaviour
         textIsTyping = true;
         foreach (char letter in dialogue.ToCharArray())
         {
-            /*if (Input.GetMouseButtonDown(0) || Input.GetKeyDown("space"))
-            {
-                dialogueText.text = dialogue;
-                break;
-            }*/
+            lettersPLaced++;
             dialogueText.text += letter;
             yield return new WaitForSeconds(typingSpeed);
         }
+        lettersPLaced = 0;
         textIsTyping = false;
     }
 }
