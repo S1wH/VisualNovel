@@ -22,6 +22,7 @@ public class GameScriptManager : MonoBehaviour
 
     private void Start()
     {
+        // get all backgrounds and their names
         backs = backgrounds.backgroundImages;
         backsNames = backgrounds.backgroundNames;
     }
@@ -60,12 +61,20 @@ public class GameScriptManager : MonoBehaviour
 
     public void ChageBackground(string name)
     {
+        // set game to pause and get names of an old a new backs
         setGamePause();
         string[] names = name.Split(" ");
         bg = backs[backsNames.IndexOf(names[0])];
         newBg = backs[backsNames.IndexOf(names[1])];
+
+        // clear dialogue panel
         dialogueManager.ClearDialoguePanel();
         dialogueManager.HideDialoguePanel();
+
+        // here we check if a number of a layer of new bg is more or less than the old one
+        // it matters because of a visibility of UI in a scene
+        // we have to know if the new bg is higher in the hierarchy than the old one
+
         if (newBg.layer > bg.layer)
         {
             Image newBgImage = newBg.GetComponent<Image>();
@@ -77,18 +86,22 @@ public class GameScriptManager : MonoBehaviour
             Image bgImage = bg.GetComponent<Image>();
             StartCoroutine("FadeDown", bgImage);
         }
+
+        // invoke scripts for showing panel ans setting game to play mode 
         Invoke("ShowDialoguePanel", 2f);
         Invoke("setGamePause", 2f);
     }
 
     private void ShowDialoguePanel()
     {
+        //here we show up dialogue panel
         ChangeColorAlpha(0, bg.GetComponent<Image>());
         dialogueManager.ShowUpDialoguePanel();
     }
 
     private void ChangeColorAlpha(float val, Image im)
     {
+        // changinf of alpha of color
         Color color = im.color;
         color.a = val;
         im.color = color;
@@ -96,6 +109,7 @@ public class GameScriptManager : MonoBehaviour
 
     IEnumerator FadeDown(Image bgImage)
     {
+        // ienumerator for fading down image
         for (float f = 1f; f > 0; f -= 0.05f)
         {
             ChangeColorAlpha(f, bgImage);
@@ -105,11 +119,10 @@ public class GameScriptManager : MonoBehaviour
 
     IEnumerator FadeUp(Image bgImage)
     {
+        // ienumerator for fading up image
         for (float f = 0f; f <= 1; f += 0.05f)
         {
-            Color color = bgImage.color;
-            color.a = f;
-            bgImage.color = color;
+            ChangeColorAlpha(f, bgImage);
             yield return new WaitForSeconds(0.05f);
         }
     }

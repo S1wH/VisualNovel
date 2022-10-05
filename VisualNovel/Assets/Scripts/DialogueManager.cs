@@ -32,8 +32,6 @@ public class DialogueManager : MonoBehaviour
         dialogue = "";
         lineNum = 0;
         dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
-
-        // set typing speed to settings value
     }
 
     void Update()
@@ -44,6 +42,8 @@ public class DialogueManager : MonoBehaviour
             ParsNewLine();
             MakeDialogueAction();
         }
+
+        // check if we have to place all text in textbox
         if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && textIsTyping && lettersPLaced > 1)
         {
             StopCoroutine(displayLineCoroutine);
@@ -71,14 +71,23 @@ public class DialogueManager : MonoBehaviour
 
     private void MakeDialogueAction() 
     {
+        // actions for dialogue text file
         if (action == "say")
+        {
             PlaceText();
+            lineNum++;
+        }
         else if (action == "cbg")
+        {
+            // here we also place next line 
             GameScriptManager.ChageBackground(Name);
-        lineNum++;
+            lineNum++;
+            Invoke("ParsNewLine", 2.5f);
+            Invoke("MakeDialogueAction", 2.5f);
+        }
     }
 
-    private void ParsNewLine() 
+    public void ParsNewLine() 
     {
         // get content from one parsed line 
         action = dialogueParser.getAction(lineNum);
@@ -89,10 +98,14 @@ public class DialogueManager : MonoBehaviour
 
     private void PlaceText() 
     {
-        // place text inside text box
+        // getting typing speed from settings
         typingSpeed = (1 - SettingsManager.typingValue) / 7;
+
+        // getting name and color of a character
         Character character = GameObject.Find(Name).GetComponent<Character>();
         characterText.color = new Color(character.color[0], character.color[1], character.color[2]);
+
+        // displaying it
         if (displayLineCoroutine != null)
             StopCoroutine(displayLineCoroutine);
         displayLineCoroutine = StartCoroutine(DisplayLine());
@@ -101,6 +114,8 @@ public class DialogueManager : MonoBehaviour
 
     private IEnumerator DisplayLine()
     {
+
+        // ienumerator for typing text 
         dialogueText.text = "";
         textIsTyping = true;
         foreach (char letter in dialogue.ToCharArray())
