@@ -1,6 +1,7 @@
 say;Mark;Привет, как дела?;0
 say;Darla;Привет, все хорошо;0
-cbg;BackGroundImage BackGroundImage2
+cbg;BackGroundImage;BackGroundImage2
 say;Mark;Ого, это новый фон!!;0
-cbg;BackGroundImage2 BackGroundImage
+cbg;BackGroundImage2;BackGroundImage
 say;Darla;Круто, он опять поменлся!!;0
+choice;Я люблю аниме;Я ненавижу аниме;choice1_1;choice1_2

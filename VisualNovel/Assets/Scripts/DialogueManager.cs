@@ -1,26 +1,38 @@
+using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
-    private int lineNum;
+    private int lineNumMain;
+    private int lineNumChosen = 0;
+    private int lineN;
 
     private string action;
-    private string dialogue;
+    private string content1;
+    private string content2;
+    private string choice1;
+    private string choice2;
     private int pose;
     private string Name;
         
     private DialogueParser dialogueParser;
+    private List<DialogueParser.DialogueLine> mainDialogue;
+    private List<DialogueParser.DialogueLine> chosenDialogue;
 
+    // variables for text typing
     private int lettersPLaced;
     private bool textIsTyping;
     private float typingSpeed;
     private Coroutine displayLineCoroutine;
 
+    // managers of the game
     [SerializeField] private SettingsManager SettingsManager;
     [SerializeField] private GameScriptManager GameScriptManager;
 
+    // dialogue panel and their components
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private TextMeshProUGUI characterText;
@@ -29,9 +41,10 @@ public class DialogueManager : MonoBehaviour
     { 
         // set dialogue panel to true and get dialogue parser
         dialoguePanel.SetActive(true);
-        dialogue = "";
-        lineNum = 0;
+        content1 = "";
+        lineNumMain = 0;
         dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
+        mainDialogue = dialogueParser.Dialogue;
     }
 
     void Update()
@@ -39,7 +52,6 @@ public class DialogueManager : MonoBehaviour
         // check if we can place new line 
         if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && !textIsTyping) 
         {
-            ParsNewLine();
             MakeDialogueAction();
         }
 
@@ -48,9 +60,21 @@ public class DialogueManager : MonoBehaviour
         {
             StopCoroutine(displayLineCoroutine);
             textIsTyping = false;
-            dialogueText.text = dialogue;
+            dialogueText.text = content1;
             lettersPLaced = 0;
         }
+    }
+
+    public void ChangeDialogue(Button button)
+    {
+        string fileName;
+        if (button.name == "Choice1")
+            fileName = choice1;
+        else
+            fileName = choice2;
+        chosenDialogue = dialogueParser.LoadDialogue(fileName + ".txt");
+        GameScriptManager.setGamePause();
+        MakeDialogueAction();
     }
 
     public void ClearDialoguePanel()
@@ -71,29 +95,73 @@ public class DialogueManager : MonoBehaviour
 
     private void MakeDialogueAction() 
     {
+        List<DialogueParser.DialogueLine> dialogueLines;
+        if (chosenDialogue != null)
+        {
+            if (chosenDialogue.Count > lineNumChosen)
+            {
+                lineN = lineNumChosen;
+                dialogueLines = chosenDialogue;
+                lineNumChosen++;
+            }
+            else
+            {
+                lineN = lineNumMain;
+                dialogueLines = mainDialogue;
+                lineNumMain++;
+            }
+        }
+        else
+        {
+            lineN = lineNumMain;
+            dialogueLines = mainDialogue;
+            lineNumMain++;
+        }
+        action = dialogueLines[lineN].action;
         // actions for dialogue text file
         if (action == "say")
         {
+            ParseSayLine(dialogueLines, lineN);
             PlaceText();
-            lineNum++;
+            lineN++;
         }
         else if (action == "cbg")
         {
             // here we also place next line 
-            GameScriptManager.ChageBackground(Name);
-            lineNum++;
-            Invoke("ParsNewLine", 2.5f);
+            ParseCBGLine(dialogueLines, lineN);
+            GameScriptManager.ChageBackground(content1, content2);
+            lineN++;
+            action = "say";
             Invoke("MakeDialogueAction", 2.5f);
+        }
+        else if (action == "choice")
+        {
+            ParseChoiceLine(dialogueLines, lineN);
+            GameScriptManager.MakeChoice(content1, content2);
+            lineN++;
         }
     }
 
-    public void ParsNewLine() 
+    private void ParseSayLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
     {
-        // get content from one parsed line 
-        action = dialogueParser.getAction(lineNum);
-        dialogue = dialogueParser.getContent(lineNum);
-        pose = dialogueParser.getPose(lineNum);
-        Name = dialogueParser.getName(lineNum);
+        // get content from one parsed line with say action
+        content1 = dialogue[lineNum].content1;
+        pose = dialogue[lineNum].pose;
+        Name = dialogue[lineNum].name;
+    }
+
+    private void ParseCBGLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
+    {
+        content1 = dialogue[lineNum].content1;
+        content2 = dialogue[lineNum].content2;
+    }
+
+    private void ParseChoiceLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
+    {
+        content1 = dialogue[lineNum].content1;
+        content2 = dialogue[lineNum].content2;
+        choice1 = dialogue[lineNum].conseq1;
+        choice2 = dialogue[lineNum].conseq2;
     }
 
     private void PlaceText() 
@@ -118,7 +186,7 @@ public class DialogueManager : MonoBehaviour
         // ienumerator for typing text 
         dialogueText.text = "";
         textIsTyping = true;
-        foreach (char letter in dialogue.ToCharArray())
+        foreach (char letter in content1.ToCharArray())
         {
             lettersPLaced++;
             dialogueText.text += letter;

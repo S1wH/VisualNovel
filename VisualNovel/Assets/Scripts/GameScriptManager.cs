@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class GameScriptManager : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class GameScriptManager : MonoBehaviour
 
     [SerializeField] private GameObject stopMenu;
     [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private GameObject choiceBox;
+    [SerializeField] private Button Choice1;
+    [SerializeField] private Button Choice2;
     [SerializeField] private DialogueManager dialogueManager;
     [SerializeField] private Backgrounds backgrounds;
 
@@ -26,6 +30,12 @@ public class GameScriptManager : MonoBehaviour
         backs = backgrounds.backgroundImages;
         backsNames = backgrounds.backgroundNames;
     }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
+
     void Update()
     {
         // different activities when esc button is pressed
@@ -45,10 +55,6 @@ public class GameScriptManager : MonoBehaviour
                 settingsMenu.SetActive(false);
         }
     }
-    public void GoToMainMenu() 
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
-    }
 
     public void setGamePause()
     {
@@ -59,13 +65,21 @@ public class GameScriptManager : MonoBehaviour
             gamePaused = true;
     }
 
-    public void ChageBackground(string name)
+    public void MakeChoice(string choice1, string choice2)
+    {
+        setGamePause();
+        Choice1.GetComponentInChildren<TextMeshProUGUI>().text = choice1;
+        Choice2.GetComponentInChildren<TextMeshProUGUI>().text = choice2;
+        choiceBox.SetActive(true);
+
+    }
+
+    public void ChageBackground(string name1, string name2)
     {
         // set game to pause and get names of an old a new backs
         setGamePause();
-        string[] names = name.Split(" ");
-        bg = backs[backsNames.IndexOf(names[0])];
-        newBg = backs[backsNames.IndexOf(names[1])];
+        bg = backs[backsNames.IndexOf(name1)];
+        newBg = backs[backsNames.IndexOf(name2)];
 
         // clear dialogue panel
         dialogueManager.ClearDialoguePanel();

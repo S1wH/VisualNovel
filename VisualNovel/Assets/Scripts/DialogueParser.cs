@@ -7,20 +7,27 @@ using System.Text.RegularExpressions;
 
 public class DialogueParser : MonoBehaviour
 {
+    private string action;
 
-    List<DialogueLine> Dialogue = new List<DialogueLine>();
-    struct DialogueLine
+    public List<DialogueLine> Dialogue = new List<DialogueLine>();
+    public struct DialogueLine
     {
         public string action;
         public string name;
-        public string content;
+        public string content1;
+        public string content2;
+        public string conseq1;
+        public string conseq2;
         public int pose;
 
-        public DialogueLine(string a, string n, string c=null, int p=-1) 
+        public DialogueLine(string a, string n = null, string c1 = null, string c2 = null, string co1 = null, string co2 = null, int p = -1)
         {
             action = a;
             name = n;
-            content = c;
+            content1 = c1;
+            content2 = c2;
+            conseq1 = co1;
+            conseq2 = co2;
             pose = p;
         }
     }
@@ -35,58 +42,49 @@ public class DialogueParser : MonoBehaviour
         LoadDialogue(file);
     }
 
-    void LoadDialogue(string fileName) 
+    public List<DialogueLine> LoadDialogue(string fileName)
     {
         // open file with a dialogue
         string file = "Assets/Dialogues/" + fileName;
         string line;
         StreamReader fileReader = new StreamReader(file);
-        using (fileReader) 
+        using (fileReader)
         {
             // read file and read content while line != null
-            do 
+            do
             {
                 line = fileReader.ReadLine();
-                if (line != null) 
+                if (line != null)
                 {
-                    DialogueLine dialogueLine;
-                    string[] line_content = line.Split(';');
-                    if (line_content.Length == 2)
-                        dialogueLine = new DialogueLine(line_content[0], line_content[1]);
-                    else
-                        dialogueLine = new DialogueLine(line_content[0], line_content[1], line_content[2], int.Parse(line_content[3]));
+                    DialogueLine dialogueLine = new DialogueLine();
+                    string[] lineContent = line.Split(';');
+                    action = lineContent[0];
+                    dialogueLine.action = action;
+                    if (action == "say")
+                    {
+                        dialogueLine.name = lineContent[1];
+                        dialogueLine.content1 = lineContent[2];
+                        dialogueLine.pose = int.Parse(lineContent[3]);
+                    }
+                    else if (action == "cbg")
+                    {
+                        dialogueLine.content1 = lineContent[1];
+                        dialogueLine.content2 = lineContent[2];
+                    }
+                    else if (action == "choice")
+                    {
+                        dialogueLine.content1 = lineContent[1];
+                        dialogueLine.content2 = lineContent[2];
+                        dialogueLine.conseq1 = lineContent[3];
+                        dialogueLine.conseq2 = lineContent[4];
+                    }
+
                     Dialogue.Add(dialogueLine);
                 }
             }
             while (line != null);
             fileReader.Close();
+            return Dialogue;
         }
-    }
-
-    public string getAction(int lineNumber)
-    {
-        if (lineNumber < Dialogue.Count)
-            return Dialogue[lineNumber].action;
-        return "";
-    }
-    public string getName(int lineNumber) 
-    {
-        if (lineNumber < Dialogue.Count)
-            return Dialogue[lineNumber].name;
-        return "";
-    }
-
-    public string getContent(int lineNumber)
-    {
-        if (lineNumber < Dialogue.Count)
-            return Dialogue[lineNumber].content;
-        return "";
-    }
-
-    public int getPose(int lineNumber)
-    {
-        if (lineNumber < Dialogue.Count)
-            return Dialogue[lineNumber].pose;
-        return 0;
     }
 }
