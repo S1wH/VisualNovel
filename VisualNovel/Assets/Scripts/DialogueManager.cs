@@ -117,28 +117,36 @@ public class DialogueManager : MonoBehaviour
             dialogueLines = mainDialogue;
             lineNumMain++;
         }
-        action = dialogueLines[lineN].action;
-        // actions for dialogue text file
-        if (action == "say")
+        if (dialogueLines.Count > lineN)
         {
-            ParseSayLine(dialogueLines, lineN);
-            PlaceText();
-            lineN++;
-        }
-        else if (action == "cbg")
-        {
-            // here we also place next line 
-            ParseCBGLine(dialogueLines, lineN);
-            GameScriptManager.ChageBackground(content1, content2);
-            lineN++;
-            action = "say";
-            Invoke("MakeDialogueAction", 2.5f);
-        }
-        else if (action == "choice")
-        {
-            ParseChoiceLine(dialogueLines, lineN);
-            GameScriptManager.MakeChoice(content1, content2);
-            lineN++;
+            action = dialogueLines[lineN].action;
+            // actions for dialogue text file
+            if (action == "say")
+            {
+                ParseSayLine(dialogueLines, lineN);
+                PlaceText();
+                lineN++;
+            }
+            else if (action == "cbg")
+            {
+                // here we also place next line 
+                ParseChangeLine(dialogueLines, lineN);
+                GameScriptManager.ChageBackground(content1, content2);
+                lineN++;
+                action = "say";
+                Invoke("MakeDialogueAction", 2.5f);
+            }
+            else if (action == "choice")
+            {
+                ParseChoiceLine(dialogueLines, lineN);
+                GameScriptManager.MakeChoice(content1, content2);
+                lineN++;
+            }
+            else if (action == "cm")
+            {
+                ParseChangeLine(dialogueLines, lineN);
+                GameScriptManager.ChangeMusic(content1, content2);
+            }
         }
     }
 
@@ -150,7 +158,7 @@ public class DialogueManager : MonoBehaviour
         Name = dialogue[lineNum].name;
     }
 
-    private void ParseCBGLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
+    private void ParseChangeLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
     {
         content1 = dialogue[lineNum].content1;
         content2 = dialogue[lineNum].content2;

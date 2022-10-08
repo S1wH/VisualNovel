@@ -9,7 +9,7 @@ public class DialogueParser : MonoBehaviour
 {
     private string action;
 
-    public List<DialogueLine> Dialogue = new List<DialogueLine>();
+    public List<DialogueLine> Dialogue;
     public struct DialogueLine
     {
         public string action;
@@ -44,6 +44,7 @@ public class DialogueParser : MonoBehaviour
 
     public List<DialogueLine> LoadDialogue(string fileName)
     {
+        Dialogue = new List<DialogueLine>();
         // open file with a dialogue
         string file = "Assets/Dialogues/" + fileName;
         string line;

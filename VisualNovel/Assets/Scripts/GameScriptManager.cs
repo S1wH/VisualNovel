@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using TMPro;
 
 public class GameScriptManager : MonoBehaviour
@@ -71,6 +70,11 @@ public class GameScriptManager : MonoBehaviour
         Choice1.GetComponentInChildren<TextMeshProUGUI>().text = choice1;
         Choice2.GetComponentInChildren<TextMeshProUGUI>().text = choice2;
         choiceBox.SetActive(true);
+
+    }
+
+    public void ChangeMusic(string name1, string name2)
+    {
 
     }
 
