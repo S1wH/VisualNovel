@@ -6,3 +6,4 @@ cbg;BackGroundImage2;BackGroundImage
 say;Darla;Круто, он опять поменлся!!;0
 choice;Я люблю аниме;Я ненавижу аниме;choice1_1;choice1_2
 say;Darla;ну вот и порешали;0
+cm;NewDivide;Centuries

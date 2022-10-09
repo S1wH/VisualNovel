@@ -4,13 +4,13 @@ using UnityEngine.UI;
 public class SettingsManager : MonoBehaviour
 {
     public float typingValue;
+    public float musicValue, soundValue;
 
     private static readonly string FirstPlay = "FirstPlay";
     private static readonly string MusicPref = "MusicPref";
     private static readonly string SoundPref = "SoundPref";
     private static readonly string TypingPref = "TypingPref";
 
-    private float musicValue, soundValue;
     private int FirstPLayInt;
 
     [SerializeField] private Slider musicSlider, soundSlider, typingSlider;
@@ -67,7 +67,6 @@ public class SettingsManager : MonoBehaviour
             SaveSoundSettings();
             SaveTypingSettings();
         }
-            
     }
 
     public void UpdateSound() 

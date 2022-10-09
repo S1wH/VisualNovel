@@ -67,7 +67,7 @@ public class DialogueParser : MonoBehaviour
                         dialogueLine.content1 = lineContent[2];
                         dialogueLine.pose = int.Parse(lineContent[3]);
                     }
-                    else if (action == "cbg")
+                    else if (action == "cbg" || action == "cm")
                     {
                         dialogueLine.content1 = lineContent[1];
                         dialogueLine.content2 = lineContent[2];
@@ -79,7 +79,6 @@ public class DialogueParser : MonoBehaviour
                         dialogueLine.conseq1 = lineContent[3];
                         dialogueLine.conseq2 = lineContent[4];
                     }
-
                     Dialogue.Add(dialogueLine);
                 }
             }

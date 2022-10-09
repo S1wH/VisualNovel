@@ -50,7 +50,7 @@ public class DialogueManager : MonoBehaviour
     void Update()
     {
         // check if we can place new line 
-        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && !textIsTyping) 
+        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && !textIsTyping && lettersPLaced == 0) 
         {
             MakeDialogueAction();
         }
@@ -58,10 +58,13 @@ public class DialogueManager : MonoBehaviour
         // check if we have to place all text in textbox
         if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && textIsTyping && lettersPLaced > 1)
         {
+
+            GameScriptManager.setGamePause();
             StopCoroutine(displayLineCoroutine);
             textIsTyping = false;
             dialogueText.text = content1;
             lettersPLaced = 0;
+            GameScriptManager.setGamePause();
         }
     }
 
@@ -146,6 +149,7 @@ public class DialogueManager : MonoBehaviour
             {
                 ParseChangeLine(dialogueLines, lineN);
                 GameScriptManager.ChangeMusic(content1, content2);
+                lineN++;
             }
         }
     }

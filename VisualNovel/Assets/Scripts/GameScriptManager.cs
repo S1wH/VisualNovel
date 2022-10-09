@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using TMPro;
 
 public class GameScriptManager : MonoBehaviour
 {
+    private List<GameObject> musicList;
     private List<GameObject> backs;
     private List<string> backsNames;
+    private List<string> musicNames;
 
-    private GameObject bg;
-    private GameObject newBg;
+    private Image bgImage;
+    private Image newBgImage;
+
+    private AudioSource music;
+    private AudioSource newMusic;
 
     [SerializeField] private GameObject stopMenu;
     [SerializeField] private GameObject settingsMenu;
@@ -19,15 +25,19 @@ public class GameScriptManager : MonoBehaviour
     [SerializeField] private Button Choice1;
     [SerializeField] private Button Choice2;
     [SerializeField] private DialogueManager dialogueManager;
-    [SerializeField] private Backgrounds backgrounds;
+    [SerializeField] private SettingsManager settingsManager;
+    [SerializeField] private Collections collections;
 
     public bool gamePaused = false;
 
     private void Start()
     {
         // get all backgrounds and their names
-        backs = backgrounds.backgroundImages;
-        backsNames = backgrounds.backgroundNames;
+        backs = collections.backgroundImages;
+        backsNames = collections.backgroundNames;
+        //get all muisc and their names
+        musicList = collections.music;
+        musicNames = collections.musicNames;
     }
 
     public void GoToMainMenu()
@@ -75,16 +85,22 @@ public class GameScriptManager : MonoBehaviour
 
     public void ChangeMusic(string name1, string name2)
     {
-
+        // get names of old and new music
+        music = musicList[musicNames.IndexOf(name1)].GetComponent<AudioSource>();
+        newMusic = musicList[musicNames.IndexOf(name2)].GetComponent<AudioSource>();
+        //start and stopping music
+        StartCoroutine("LowMusic");
+        Invoke("StartNewMusic", 2f);
     }
 
     public void ChageBackground(string name1, string name2)
     {
         // set game to pause and get names of an old a new backs
         setGamePause();
-        bg = backs[backsNames.IndexOf(name1)];
-        newBg = backs[backsNames.IndexOf(name2)];
-
+        GameObject bg = backs[backsNames.IndexOf(name1)];
+        GameObject newBg = backs[backsNames.IndexOf(name2)];
+        bgImage = bg.GetComponent<Image>();
+        newBgImage = newBg.GetComponent<Image>();
         // clear dialogue panel
         dialogueManager.ClearDialoguePanel();
         dialogueManager.HideDialoguePanel();
@@ -92,17 +108,14 @@ public class GameScriptManager : MonoBehaviour
         // here we check if a number of a layer of new bg is more or less than the old one
         // it matters because of a visibility of UI in a scene
         // we have to know if the new bg is higher in the hierarchy than the old one
-
         if (newBg.layer > bg.layer)
         {
-            Image newBgImage = newBg.GetComponent<Image>();
-            StartCoroutine("FadeUp", newBgImage);
+            StartCoroutine("FadeUp");
         }
         else
         {
-            ChangeColorAlpha(1, newBg.GetComponent<Image>());
-            Image bgImage = bg.GetComponent<Image>();
-            StartCoroutine("FadeDown", bgImage);
+            ChangeColorAlpha(1, newBgImage);
+            StartCoroutine("FadeDown");
         }
 
         // invoke scripts for showing panel ans setting game to play mode 
@@ -113,7 +126,7 @@ public class GameScriptManager : MonoBehaviour
     private void ShowDialoguePanel()
     {
         //here we show up dialogue panel
-        ChangeColorAlpha(0, bg.GetComponent<Image>());
+        ChangeColorAlpha(0, bgImage);
         dialogueManager.ShowUpDialoguePanel();
     }
 
@@ -125,7 +138,7 @@ public class GameScriptManager : MonoBehaviour
         im.color = color;
     }
 
-    IEnumerator FadeDown(Image bgImage)
+    IEnumerator FadeDown()
     {
         // ienumerator for fading down image
         for (float f = 1f; f > 0; f -= 0.05f)
@@ -135,13 +148,38 @@ public class GameScriptManager : MonoBehaviour
         }
     }
 
-    IEnumerator FadeUp(Image bgImage)
+    IEnumerator FadeUp()
     {
         // ienumerator for fading up image
         for (float f = 0f; f <= 1; f += 0.05f)
         {
-            ChangeColorAlpha(f, bgImage);
+            ChangeColorAlpha(f, newBgImage);
             yield return new WaitForSeconds(0.05f);
         }
+    }
+
+    IEnumerator HighMusic()
+    {
+        for (float i = 0f; i <= settingsManager.musicValue; i += 0.0005f)
+        {
+            newMusic.volume = i;
+            yield return new WaitForSeconds(0.0005f);
+        }
+        newMusic.volume = settingsManager.musicValue;
+    }
+    IEnumerator LowMusic()
+    {
+        for (float i = music.volume; i > 0 ; i -= 0.0005f)
+        {
+            music.volume = i;
+            yield return new WaitForSeconds(0.005f);
+        }
+        music.volume = 0;
+    }
+
+    void StartNewMusic()
+    {
+        newMusic.Play();
+        StartCoroutine("HighMusic");
     }
 }
