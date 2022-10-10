@@ -5,11 +5,10 @@ public class SettingsManager : MonoBehaviour
 {
     public float typingValue;
     public float musicValue, soundValue;
-
-    private static readonly string FirstPlay = "FirstPlay";
     private static readonly string MusicPref = "MusicPref";
     private static readonly string SoundPref = "SoundPref";
     private static readonly string TypingPref = "TypingPref";
+    public static readonly string FirstPlay = "FirstPlay";
 
     private int FirstPLayInt;
 

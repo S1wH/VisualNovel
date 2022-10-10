@@ -38,13 +38,17 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI characterText;
 
     void Start()
-    { 
-        // set dialogue panel to true and get dialogue parser
-        dialoguePanel.SetActive(true);
-        content1 = "";
-        lineNumMain = 0;
-        dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
-        mainDialogue = dialogueParser.Dialogue;
+    {
+        Debug.Log(DataHolder.NewGame);
+        if (DataHolder.NewGame)
+        {
+            // set dialogue panel to true and get dialogue parser
+            dialoguePanel.SetActive(true);
+            content1 = "";
+            lineNumMain = 0;
+            dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
+            mainDialogue = dialogueParser.Dialogue;
+        }
     }
 
     void Update()
