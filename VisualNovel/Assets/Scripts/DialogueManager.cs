@@ -6,8 +6,8 @@ using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
-    private int lineNumMain;
-    private int lineNumChosen = 0;
+    public int lineNumMain;
+    public int lineNumChosen = 0;
     private int lineN;
 
     private string action;
@@ -19,8 +19,9 @@ public class DialogueManager : MonoBehaviour
     private string Name;
         
     private DialogueParser dialogueParser;
-    private List<DialogueParser.DialogueLine> mainDialogue;
-    private List<DialogueParser.DialogueLine> chosenDialogue;
+    public List<DialogueParser.DialogueLine> mainDialogue;
+    public List<DialogueParser.DialogueLine> chosenDialogue;
+    List<DialogueParser.DialogueLine> dialogueLines;
 
     // variables for text typing
     private int lettersPLaced;
@@ -31,6 +32,7 @@ public class DialogueManager : MonoBehaviour
     // managers of the game
     [SerializeField] private SettingsManager SettingsManager;
     [SerializeField] private GameScriptManager GameScriptManager;
+    [SerializeField] private SaveManager SaveManager;
 
     // dialogue panel and their components
     [SerializeField] private GameObject dialoguePanel;
@@ -39,16 +41,25 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log(DataHolder.NewGame);
+        dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
+        dialoguePanel.SetActive(true);
         if (DataHolder.NewGame)
         {
-            // set dialogue panel to true and get dialogue parser
-            dialoguePanel.SetActive(true);
-            content1 = "";
             lineNumMain = 0;
-            dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
             mainDialogue = dialogueParser.Dialogue;
         }
+        else
+        {
+            GameData data = DataHolder.Data;
+            mainDialogue = data.mainDialogue;
+            chosenDialogue = data.choiceDialogue;
+            if (chosenDialogue == null)
+                lineNumMain = data.mainDialogueLine - 1;
+            else
+                lineNumMain = data.mainDialogueLine + 1;
+            lineNumChosen = data.choiceDialogueLine - 1;
+        }
+        Invoke("MakeDialogueAction", 1f);
     }
 
     void Update()
@@ -80,6 +91,7 @@ public class DialogueManager : MonoBehaviour
         else
             fileName = choice2;
         chosenDialogue = dialogueParser.LoadDialogue(fileName + ".txt");
+        lineNumChosen = 0;
         GameScriptManager.setGamePause();
         MakeDialogueAction();
     }
@@ -102,7 +114,6 @@ public class DialogueManager : MonoBehaviour
 
     private void MakeDialogueAction() 
     {
-        List<DialogueParser.DialogueLine> dialogueLines;
         if (chosenDialogue != null)
         {
             if (chosenDialogue.Count > lineNumChosen)
@@ -113,6 +124,7 @@ public class DialogueManager : MonoBehaviour
             }
             else
             {
+                chosenDialogue = null;
                 lineN = lineNumMain;
                 dialogueLines = mainDialogue;
                 lineNumMain++;
@@ -149,10 +161,15 @@ public class DialogueManager : MonoBehaviour
                 GameScriptManager.MakeChoice(content1, content2);
                 lineN++;
             }
-            else if (action == "cm")
+            else if (action == "startm")
             {
-                ParseChangeLine(dialogueLines, lineN);
-                GameScriptManager.ChangeMusic(content1, content2);
+                ParseStartMusicLine(dialogueLines, lineN);
+                GameScriptManager.StartMusic(content1);
+                lineN++;
+            }
+            else if (action == "stopm")
+            {
+                GameScriptManager.StopMusic();
                 lineN++;
             }
         }
@@ -178,6 +195,11 @@ public class DialogueManager : MonoBehaviour
         content2 = dialogue[lineNum].content2;
         choice1 = dialogue[lineNum].conseq1;
         choice2 = dialogue[lineNum].conseq2;
+    }
+
+    private void ParseStartMusicLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
+    {
+        content1 = dialogue[lineNum].content1;
     }
 
     private void PlaceText() 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.Audio;
 using TMPro;
 
 public class GameScriptManager : MonoBehaviour
@@ -17,10 +16,11 @@ public class GameScriptManager : MonoBehaviour
     private Image newBgImage;
 
     private AudioSource music;
-    private AudioSource newMusic;
 
+    [SerializeField] private GameObject sureBox;
     [SerializeField] private GameObject stopMenu;
     [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private GameObject saveMenu;
     [SerializeField] private GameObject choiceBox;
     [SerializeField] private Button Choice1;
     [SerializeField] private Button Choice2;
@@ -32,12 +32,27 @@ public class GameScriptManager : MonoBehaviour
 
     private void Start()
     {
+        collections.InitializeCollections();
         // get all backgrounds and their names
         backs = collections.backgroundImages;
         backsNames = collections.backgroundNames;
         //get all muisc and their names
         musicList = collections.music;
         musicNames = collections.musicNames;
+
+        if (!DataHolder.NewGame)
+        {
+            GameData data = DataHolder.Data;
+            newBgImage = backs[backsNames.IndexOf(data.activeBackgroundName)].GetComponent<Image>();
+            music = musicList[musicNames.IndexOf(data.activeMusicName)].GetComponent<AudioSource>();
+        }
+        else
+        {
+            music = musicList[0].GetComponent<AudioSource>();
+            newBgImage = backs[0].GetComponent<Image>();
+        }
+        music.Play();
+        ChangeColorAlpha(1, newBgImage);
     }
 
     public void GoToMainMenu()
@@ -55,13 +70,15 @@ public class GameScriptManager : MonoBehaviour
                 setGamePause();
                 stopMenu.SetActive(true);
             }
-            else if (gamePaused && stopMenu.activeSelf && !settingsMenu.activeSelf)
+            else if (gamePaused && stopMenu.activeSelf && !settingsMenu.activeSelf && !saveMenu.activeSelf)
             {
                 setGamePause();
                 stopMenu.SetActive(false);
             }
             else if (gamePaused && stopMenu.activeSelf && settingsMenu.activeSelf)
                 settingsMenu.SetActive(false);
+            else if (gamePaused && stopMenu.activeSelf && saveMenu.activeSelf)
+                saveMenu.SetActive(false);
         }
     }
 
@@ -83,14 +100,17 @@ public class GameScriptManager : MonoBehaviour
 
     }
 
-    public void ChangeMusic(string name1, string name2)
+    public void StopMusic()
     {
-        // get names of old and new music
-        music = musicList[musicNames.IndexOf(name1)].GetComponent<AudioSource>();
-        newMusic = musicList[musicNames.IndexOf(name2)].GetComponent<AudioSource>();
-        //start and stopping music
         StartCoroutine("LowMusic");
-        Invoke("StartNewMusic", 2f);
+    }
+
+    public void StartMusic(string musicName)
+    {
+        music = musicList[musicNames.IndexOf(musicName)].GetComponent<AudioSource>();
+        music.volume = 0;
+        music.Play();
+        StartCoroutine("HighMusic");
     }
 
     public void ChageBackground(string name1, string name2)
@@ -121,6 +141,17 @@ public class GameScriptManager : MonoBehaviour
         // invoke scripts for showing panel ans setting game to play mode 
         Invoke("ShowDialoguePanel", 2f);
         Invoke("setGamePause", 2f);
+    }
+
+    public void AreYouSure(string text)
+    {
+        sureBox.GetComponentInChildren<TextMeshProUGUI>().text = text;
+        sureBox.SetActive(true);
+    }
+
+    public void CloseSureBox()
+    {
+        sureBox.SetActive(false);
     }
 
     private void ShowDialoguePanel()
@@ -160,16 +191,16 @@ public class GameScriptManager : MonoBehaviour
 
     IEnumerator HighMusic()
     {
-        for (float i = 0f; i <= settingsManager.musicValue; i += 0.0005f)
+        for (float i = 0f; i <= settingsManager.musicValue; i += 0.005f)
         {
-            newMusic.volume = i;
-            yield return new WaitForSeconds(0.0005f);
+            music.volume = i;
+            yield return new WaitForSeconds(0.005f);
         }
-        newMusic.volume = settingsManager.musicValue;
+        music.volume = settingsManager.musicValue;
     }
     IEnumerator LowMusic()
     {
-        for (float i = music.volume; i > 0 ; i -= 0.0005f)
+        for (float i = music.volume; i > 0 ; i -= 0.005f)
         {
             music.volume = i;
             yield return new WaitForSeconds(0.005f);
@@ -177,9 +208,16 @@ public class GameScriptManager : MonoBehaviour
         music.volume = 0;
     }
 
-    void StartNewMusic()
-    {
-        newMusic.Play();
-        StartCoroutine("HighMusic");
+    public GameData GetData()
+    {   
+        GameData gameData = new GameData();
+        gameData.mainDialogue = dialogueManager.mainDialogue;
+        gameData.choiceDialogue = dialogueManager.chosenDialogue;
+        gameData.mainDialogueLine = dialogueManager.lineNumMain;
+        gameData.choiceDialogueLine = dialogueManager.lineNumChosen;
+        gameData.activeBackgroundName = newBgImage.name;
+        gameData.activeCharacters = null;
+        gameData.activeMusicName = music.name;
+        return gameData;
     }
 }

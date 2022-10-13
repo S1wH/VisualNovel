@@ -1,19 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class DataHolder : MonoBehaviour
+public static class DataHolder
 {
-    private static readonly string SavePref = "SavePref";
-    public static int savePrefInt;
+    public static readonly string FirstPlay = "FirstPlay";
     public static bool NewGame { get; set; }
-
-    private void Start()
-    {
-        savePrefInt = PlayerPrefs.GetInt(SavePref);
-    }
-
-    public static void SetSavePref()
-    {
-        savePrefInt++;
-        PlayerPrefs.SetInt(SavePref, savePrefInt);
-    }
+    public static GameData Data { get; set; }
 }

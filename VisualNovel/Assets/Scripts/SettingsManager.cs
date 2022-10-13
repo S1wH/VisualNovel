@@ -8,7 +8,6 @@ public class SettingsManager : MonoBehaviour
     private static readonly string MusicPref = "MusicPref";
     private static readonly string SoundPref = "SoundPref";
     private static readonly string TypingPref = "TypingPref";
-    public static readonly string FirstPlay = "FirstPlay";
 
     private int FirstPLayInt;
 
@@ -20,7 +19,7 @@ public class SettingsManager : MonoBehaviour
     void Start()
     {
         // check if it is a first player's entry into the game
-        FirstPLayInt = PlayerPrefs.GetInt(FirstPlay);
+        FirstPLayInt = PlayerPrefs.GetInt(DataHolder.FirstPlay);
         if (FirstPLayInt == 0) 
         {
             // set default volume settings
@@ -28,7 +27,7 @@ public class SettingsManager : MonoBehaviour
             soundValue = 0.25f;
             PlayerPrefs.SetFloat(MusicPref, musicValue);
             PlayerPrefs.SetFloat(SoundPref, soundValue);
-            PlayerPrefs.SetInt(FirstPlay, -1);
+            PlayerPrefs.SetInt(DataHolder.FirstPlay, -1);
 
             //set default typings speed settings
             typingValue = 0.25f;

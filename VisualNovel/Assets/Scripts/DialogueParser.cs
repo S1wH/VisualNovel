@@ -67,10 +67,14 @@ public class DialogueParser : MonoBehaviour
                         dialogueLine.content1 = lineContent[2];
                         dialogueLine.pose = int.Parse(lineContent[3]);
                     }
-                    else if (action == "cbg" || action == "cm")
+                    else if (action == "cbg")
                     {
                         dialogueLine.content1 = lineContent[1];
                         dialogueLine.content2 = lineContent[2];
+                    }
+                    else if (action == "startm")
+                    {
+                        dialogueLine.content1 = lineContent[1];
                     }
                     else if (action == "choice")
                     {

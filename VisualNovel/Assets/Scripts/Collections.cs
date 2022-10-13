@@ -10,7 +10,7 @@ public class Collections : MonoBehaviour
     public List<string> backgroundNames;
     public List<string> musicNames;
 
-    private void Start()
+    public void InitializeCollections()
     {
         foreach (GameObject image in backgroundImages)
         {
