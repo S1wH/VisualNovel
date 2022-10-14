@@ -5,6 +5,7 @@ public class SettingsManager : MonoBehaviour
 {
     public float typingValue;
     public float musicValue, soundValue;
+
     private static readonly string MusicPref = "MusicPref";
     private static readonly string SoundPref = "SoundPref";
     private static readonly string TypingPref = "TypingPref";
@@ -38,9 +39,12 @@ public class SettingsManager : MonoBehaviour
             // get last player's volume settings
             musicValue = PlayerPrefs.GetFloat(MusicPref);
             soundValue = PlayerPrefs.GetFloat(SoundPref);
+
             // ger last player's typing settings
             typingValue = PlayerPrefs.GetFloat(TypingPref);
         }
+
+        // set this settings to sliders
         musicSlider.value = musicValue;
         soundSlider.value = soundValue;
         typingSlider.value = typingValue;
@@ -82,6 +86,7 @@ public class SettingsManager : MonoBehaviour
 
     public void UpdateTypingSpeed()
     {
+        // change typing settings according to it's value 
         typingValue = typingSlider.value;
     }
 }

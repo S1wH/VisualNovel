@@ -65,18 +65,25 @@ public class GameScriptManager : MonoBehaviour
         // different activities when esc button is pressed
         if (Input.GetKeyDown(KeyCode.Escape) ) 
         {
+            // game isn't paused and stop menu isn't activated
             if (!gamePaused && !stopMenu.activeSelf)
             {
                 setGamePause();
                 stopMenu.SetActive(true);
             }
+
+            // game is paused, stop menu is activated, but settings menu and save menu aren't activated
             else if (gamePaused && stopMenu.activeSelf && !settingsMenu.activeSelf && !saveMenu.activeSelf)
             {
                 setGamePause();
                 stopMenu.SetActive(false);
             }
+            
+            // game is paused, stop menu and settings menu are activated
             else if (gamePaused && stopMenu.activeSelf && settingsMenu.activeSelf)
                 settingsMenu.SetActive(false);
+
+            // game is paused, stop menu  and save menu are activated
             else if (gamePaused && stopMenu.activeSelf && saveMenu.activeSelf)
                 saveMenu.SetActive(false);
         }
@@ -93,6 +100,7 @@ public class GameScriptManager : MonoBehaviour
 
     public void MakeChoice(string choice1, string choice2)
     {
+        // activate choice box
         setGamePause();
         Choice1.GetComponentInChildren<TextMeshProUGUI>().text = choice1;
         Choice2.GetComponentInChildren<TextMeshProUGUI>().text = choice2;
@@ -145,6 +153,7 @@ public class GameScriptManager : MonoBehaviour
 
     public void AreYouSure(string text)
     {
+        // activate sure box
         sureBox.GetComponentInChildren<TextMeshProUGUI>().text = text;
         sureBox.SetActive(true);
     }
@@ -191,6 +200,7 @@ public class GameScriptManager : MonoBehaviour
 
     IEnumerator HighMusic()
     {
+        // ienumerator for making volume higher
         for (float i = 0f; i <= settingsManager.musicValue; i += 0.005f)
         {
             music.volume = i;
@@ -200,6 +210,7 @@ public class GameScriptManager : MonoBehaviour
     }
     IEnumerator LowMusic()
     {
+        // ienumerator for making volume lower
         for (float i = music.volume; i > 0 ; i -= 0.005f)
         {
             music.volume = i;
@@ -210,6 +221,7 @@ public class GameScriptManager : MonoBehaviour
 
     public GameData GetData()
     {   
+        // getting data for save file
         GameData gameData = new GameData();
         gameData.mainDialogue = dialogueManager.mainDialogue;
         gameData.choiceDialogue = dialogueManager.chosenDialogue;

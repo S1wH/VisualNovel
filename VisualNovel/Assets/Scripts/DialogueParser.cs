@@ -61,6 +61,8 @@ public class DialogueParser : MonoBehaviour
                     string[] lineContent = line.Split(';');
                     action = lineContent[0];
                     dialogueLine.action = action;
+
+                    // different actions according to action content
                     if (action == "say")
                     {
                         dialogueLine.name = lineContent[1];

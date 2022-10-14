@@ -18,8 +18,10 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
+        // check if it is a first play
         if (PlayerPrefs.GetInt(DataHolder.FirstPlay) == 0)
         {
+            // set all save slots to empty
             foreach (Button saveSlot in saveSlots)
             {
                 PlayerPrefs.SetInt(SavePref + saveSlot.name[saveSlot.name.Length - 1], 0);
@@ -30,6 +32,7 @@ public class SaveManager : MonoBehaviour
             int val;
             foreach (Button saveSlot in saveSlots)
             {
+                // set save slots
                 val = PlayerPrefs.GetInt(SavePref + saveSlot.name[saveSlot.name.Length - 1]);
                 if (val != 0)
                     saveSlot.GetComponentInChildren<Text>().text = "Занято";
@@ -42,12 +45,16 @@ public class SaveManager : MonoBehaviour
         Text buttonText = button.GetComponentInChildren<Text>();
         if (buttonText.text == "Занято" || buttonText.text == "Пусто")
             id = button.name[button.name.Length - 1];
+
+        // if there is a save in this slot
         if (buttonText.text == "Занято")
         {
             string text = "Вы действительно хотите перезаписать данное сохранение?\nДанные этого сохранения будут утрачены";
             gameManager.AreYouSure(text);
             return;
         }
+
+        // if there is no save in this slot
         else if (buttonText.text == "Пусто")
         {
             storage = new Storage();
@@ -56,6 +63,8 @@ public class SaveManager : MonoBehaviour
             storage.Save(data, id);
             buttonText.text = "Занято";
         }
+
+        // player doesn't want to save game in a locked slot
         else
         {
             gameManager.CloseSureBox();
@@ -70,10 +79,14 @@ public class SaveManager : MonoBehaviour
         Text buttonText = button.GetComponentInChildren<Text>();
         if (buttonText.text == "Занято")
             id = button.name[button.name.Length - 1];
+
+        // there is a save in this slot
         if (buttonText.text != "Пусто" || buttonText.text != "Да")
         {
             storage = new Storage();
             object data;
+
+            // if we want to load while playing a game
             if (SceneManager.GetActiveScene().buildIndex != 0 && buttonText.text == "Занято")
             {
                 string text = "Вы действительно хотите загрузить сохранение?\nВсе несохраненные данные будут утеряны";
@@ -85,19 +98,20 @@ public class SaveManager : MonoBehaviour
                 data = storage.Load(id);
             DataHolder.Data = (GameData)data;
             DataHolder.NewGame = false;
+
+            // load from main menu
             if (buttonText.text == "Занято")
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
+            // load while playing a game
             else
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-        else
-        {
-            Debug.Log("There is no save here");
         }
     }
 
     public void ChooseAction(Button button)
     {
+        // check if player want to save or load a game
         if (mode == "SaveMode")
             SaveGame(button);
         else
@@ -106,6 +120,7 @@ public class SaveManager : MonoBehaviour
 
     public void SetMode(Button button)
     {
+        // set mode according to button text
         if (button.name == "SaveBtn")
             mode = "SaveMode";
         else

@@ -15,17 +15,19 @@ public class Storage
 
     private void InitBinaryFormatter() 
     {
+        // intitialize formatter that can serialize and deserialize structures
         formatter = new BinaryFormatter();
         var selector = new SurrogateSelector();
-
         var dialogeLineSurrogate = new DialogueLineSerializationSurrogate();
-        selector.AddSurrogate(typeof(DialogueParser.DialogueLine), new StreamingContext(StreamingContextStates.All), dialogeLineSurrogate);
 
+        // add surrogate of DialogueLine
+        selector.AddSurrogate(typeof(DialogueParser.DialogueLine), new StreamingContext(StreamingContextStates.All), dialogeLineSurrogate);
         formatter.SurrogateSelector = selector;
     }
 
     private void CreateFilePath(char id)
     {
+        // creatinf a filepath according to id of pressed button
         var directory = Application.persistentDataPath + "/saves";
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
@@ -34,6 +36,7 @@ public class Storage
     }
     public object Load(char id)
     {
+        // here we create file path, open it, get deserialized data from it and return
         CreateFilePath(id);
         var file = File.Open(filePath, FileMode.Open);
         var savedData = formatter.Deserialize(file);
@@ -43,6 +46,7 @@ public class Storage
 
     public void Save(object saveData, char id)
     {
+        // here we create file path, create file and serialize data into it
         CreateFilePath(id);
         var file = File.Create(filePath);
         formatter.Serialize(file, saveData);

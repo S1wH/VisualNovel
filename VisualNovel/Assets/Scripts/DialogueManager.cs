@@ -6,10 +6,7 @@ using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
-    public int lineNumMain;
-    public int lineNumChosen = 0;
-    private int lineN;
-
+    // content inside dialogue line
     private string action;
     private string content1;
     private string content2;
@@ -17,11 +14,16 @@ public class DialogueManager : MonoBehaviour
     private string choice2;
     private int pose;
     private string Name;
-        
+    
+    // everyting that connects with dialogue parser or dialogue line system
     private DialogueParser dialogueParser;
     public List<DialogueParser.DialogueLine> mainDialogue;
     public List<DialogueParser.DialogueLine> chosenDialogue;
     List<DialogueParser.DialogueLine> dialogueLines;
+
+    public int lineNumMain;
+    public int lineNumChosen = 0;
+    private int lineN;
 
     // variables for text typing
     private int lettersPLaced;
@@ -41,8 +43,11 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
+        // activate dialogue panel and find parser from which we can get dialogue
         dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
         dialoguePanel.SetActive(true);
+
+        // check if it is a new game or not
         if (DataHolder.NewGame)
         {
             lineNumMain = 0;
@@ -70,7 +75,7 @@ public class DialogueManager : MonoBehaviour
             MakeDialogueAction();
         }
 
-        // check if we have to place all text in textbox
+        // check if we can place all text in textbox
         if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && textIsTyping && lettersPLaced > 1)
         {
 
@@ -85,11 +90,14 @@ public class DialogueManager : MonoBehaviour
 
     public void ChangeDialogue(Button button)
     {
+        // select new dialogue according to player's choice
         string fileName;
         if (button.name == "Choice1")
             fileName = choice1;
         else
             fileName = choice2;
+
+        // get new dialogue for consequences of player's choice
         chosenDialogue = dialogueParser.LoadDialogue(fileName + ".txt");
         lineNumChosen = 0;
         GameScriptManager.setGamePause();
@@ -114,14 +122,18 @@ public class DialogueManager : MonoBehaviour
 
     private void MakeDialogueAction() 
     {
+        // check if there is a choice dialogue 
         if (chosenDialogue != null)
         {
+            // check if any lines left in it
             if (chosenDialogue.Count > lineNumChosen)
             {
                 lineN = lineNumChosen;
                 dialogueLines = chosenDialogue;
                 lineNumChosen++;
             }
+
+            // flow to main dialogue
             else
             {
                 chosenDialogue = null;
@@ -130,15 +142,20 @@ public class DialogueManager : MonoBehaviour
                 lineNumMain++;
             }
         }
+
+        // also flow to main dialogue
         else
         {
             lineN = lineNumMain;
             dialogueLines = mainDialogue;
             lineNumMain++;
         }
+
+        //check if any lines left in this dialogue
         if (dialogueLines.Count > lineN)
         {
             action = dialogueLines[lineN].action;
+
             // actions for dialogue text file
             if (action == "say")
             {
@@ -175,9 +192,9 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    // get content from one parsed line for all parse functions
     private void ParseSayLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
     {
-        // get content from one parsed line with say action
         content1 = dialogue[lineNum].content1;
         pose = dialogue[lineNum].pose;
         Name = dialogue[lineNum].name;
@@ -220,7 +237,6 @@ public class DialogueManager : MonoBehaviour
 
     private IEnumerator DisplayLine()
     {
-
         // ienumerator for typing text 
         dialogueText.text = "";
         textIsTyping = true;
