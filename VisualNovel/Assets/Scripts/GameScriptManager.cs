@@ -147,8 +147,8 @@ public class GameScriptManager : MonoBehaviour
         }
 
         // invoke scripts for showing panel ans setting game to play mode 
-        Invoke("ShowDialoguePanel", 2f);
-        Invoke("setGamePause", 2f);
+        Invoke("ShowDialoguePanel", dialogueManager.delayChangeAction);
+        Invoke("setGamePause", dialogueManager.delayChangeAction);
     }
 
     public void AreYouSure(string text)
@@ -184,7 +184,7 @@ public class GameScriptManager : MonoBehaviour
         for (float f = 1f; f > 0; f -= 0.05f)
         {
             ChangeColorAlpha(f, bgImage);
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(dialogueManager.delayFade);
         }
     }
 
@@ -194,7 +194,7 @@ public class GameScriptManager : MonoBehaviour
         for (float f = 0f; f <= 1; f += 0.05f)
         {
             ChangeColorAlpha(f, newBgImage);
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(dialogueManager.delayFade);
         }
     }
 

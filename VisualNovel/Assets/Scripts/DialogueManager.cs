@@ -25,6 +25,12 @@ public class DialogueManager : MonoBehaviour
     public int lineNumChosen = 0;
     private int lineN;
 
+    public float delayChangeAction = 2f;
+    public float delayFade = 0.05f;
+
+    private bool isSkipping;
+    private bool actionHappens;
+
     // variables for text typing
     private int lettersPLaced;
     private bool textIsTyping;
@@ -43,6 +49,8 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
+        isSkipping = false;
+        typingSpeed = (1 - SettingsManager.typingValue) / 7;
         // activate dialogue panel and find parser from which we can get dialogue
         dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
         dialoguePanel.SetActive(true);
@@ -64,19 +72,19 @@ public class DialogueManager : MonoBehaviour
                 lineNumMain = data.mainDialogueLine + 1;
             lineNumChosen = data.choiceDialogueLine - 1;
         }
-        Invoke("MakeDialogueAction", 1f);
+        Invoke("MakeDialogueAction", 0.5f);
     }
 
     void Update()
     {
         // check if we can place new line 
-        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && !textIsTyping && lettersPLaced == 0) 
+        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && !textIsTyping && lettersPLaced == 0 && !actionHappens) 
         {
             MakeDialogueAction();
         }
 
         // check if we can place all text in textbox
-        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && textIsTyping && lettersPLaced > 1)
+        else if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && textIsTyping && lettersPLaced > 1 && actionHappens)
         {
 
             GameScriptManager.setGamePause();
@@ -85,6 +93,27 @@ public class DialogueManager : MonoBehaviour
             dialogueText.text = content1;
             lettersPLaced = 0;
             GameScriptManager.setGamePause();
+        }
+
+        // check if user holds tab to skip all actions
+        else if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            isSkipping = true;
+            typingSpeed = 0.02f;
+            delayChangeAction = 0.5f;
+            delayFade = 0.01f;
+            Invoke("MakeDialogueAction", delayChangeAction);
+        }
+        else if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            isSkipping = false;
+            typingSpeed = (1 - SettingsManager.typingValue) / 7;
+            delayChangeAction = 2f;
+            delayFade = 0.05f;
+        }
+        else if (!actionHappens && isSkipping && !GameScriptManager.gamePaused)
+        {
+            MakeDialogueAction();
         }
     }
 
@@ -122,6 +151,7 @@ public class DialogueManager : MonoBehaviour
 
     private void MakeDialogueAction() 
     {
+        actionHappens = true;
         // check if there is a choice dialogue 
         if (chosenDialogue != null)
         {
@@ -170,24 +200,28 @@ public class DialogueManager : MonoBehaviour
                 GameScriptManager.ChageBackground(content1, content2);
                 lineN++;
                 action = "say";
-                Invoke("MakeDialogueAction", 2.5f);
+                actionHappens = false;
+                Invoke("MakeDialogueAction", delayChangeAction);
             }
             else if (action == "choice")
             {
                 ParseChoiceLine(dialogueLines, lineN);
                 GameScriptManager.MakeChoice(content1, content2);
                 lineN++;
+                actionHappens = false;
             }
             else if (action == "startm")
             {
                 ParseStartMusicLine(dialogueLines, lineN);
                 GameScriptManager.StartMusic(content1);
                 lineN++;
+                actionHappens = false;
             }
             else if (action == "stopm")
             {
                 GameScriptManager.StopMusic();
                 lineN++;
+                actionHappens = false;
             }
         }
     }
@@ -248,5 +282,6 @@ public class DialogueManager : MonoBehaviour
         }
         lettersPLaced = 0;
         textIsTyping = false;
+        actionHappens = false;
     }
 }
