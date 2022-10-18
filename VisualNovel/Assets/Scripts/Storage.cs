@@ -38,10 +38,15 @@ public class Storage
     {
         // here we create file path, open it, get deserialized data from it and return
         CreateFilePath(id);
-        var file = File.Open(filePath, FileMode.Open);
-        var savedData = formatter.Deserialize(file);
-        file.Close();
-        return savedData;
+        if (File.Exists(filePath))
+        {
+            var file = File.Open(filePath, FileMode.Open);
+            var savedData = formatter.Deserialize(file);
+            file.Close();
+            return savedData;
+        }
+        else
+            return null;
     }
 
     public void Save(object saveData, char id)

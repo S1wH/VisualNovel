@@ -21,9 +21,12 @@ public class DialogueManager : MonoBehaviour
     public List<DialogueParser.DialogueLine> chosenDialogue;
     List<DialogueParser.DialogueLine> dialogueLines;
 
+    public string dialogueNameMain;
+    public string dialogueNameChoice;
     public int lineNumMain;
     public int lineNumChosen = 0;
     private int lineN;
+    private string dialogueNameNow;
 
     public float delayChangeAction = 2f;
     public float delayFade = 0.05f;
@@ -59,6 +62,7 @@ public class DialogueManager : MonoBehaviour
         if (DataHolder.NewGame)
         {
             lineNumMain = 0;
+            dialogueNameMain = "Dialogue1";
             mainDialogue = dialogueParser.Dialogue;
         }
         else
@@ -66,11 +70,24 @@ public class DialogueManager : MonoBehaviour
             GameData data = DataHolder.Data;
             mainDialogue = data.mainDialogue;
             chosenDialogue = data.choiceDialogue;
+            dialogueNameMain = data.mainDialogueName;
+            dialogueNameChoice = data.chosenDialogueName;
             if (chosenDialogue == null)
                 lineNumMain = data.mainDialogueLine - 1;
             else
                 lineNumMain = data.mainDialogueLine + 1;
             lineNumChosen = data.choiceDialogueLine - 1;
+        }
+        SaveManager.LoadSeenActions();
+        if (DataHolder.Data != null && DataHolder.Data.SeenDialogues != null)
+        {
+            DataHolder.SeenDialogues = DataHolder.Data.SeenDialogues;
+            DataHolder.SeenDialoguesLines = DataHolder.Data.SeenDialoguesLines;
+        }
+        else
+        {
+            DataHolder.SeenDialogues = new List<string>();
+            DataHolder.SeenDialoguesLines = new List<int>();
         }
         Invoke("MakeDialogueAction", 0.5f);
     }
@@ -89,6 +106,7 @@ public class DialogueManager : MonoBehaviour
 
             GameScriptManager.setGamePause();
             StopCoroutine(displayLineCoroutine);
+            actionHappens = false;
             textIsTyping = false;
             dialogueText.text = content1;
             lettersPLaced = 0;
@@ -98,18 +116,21 @@ public class DialogueManager : MonoBehaviour
         // check if user holds tab to skip all actions
         else if (Input.GetKeyDown(KeyCode.Tab))
         {
-            isSkipping = true;
-            typingSpeed = 0.02f;
-            delayChangeAction = 0.5f;
-            delayFade = 0.01f;
-            Invoke("MakeDialogueAction", delayChangeAction);
-        }
-        else if (Input.GetKeyUp(KeyCode.Tab))
-        {
-            isSkipping = false;
-            typingSpeed = (1 - SettingsManager.typingValue) / 7;
-            delayChangeAction = 2f;
-            delayFade = 0.05f;
+            if (isSkipping) 
+            {
+                isSkipping = false;
+                typingSpeed = (1 - SettingsManager.typingValue) / 7;
+                delayChangeAction = 2f;
+                delayFade = 0.05f;
+                isSkipping = false;
+            }
+            else
+            {
+                isSkipping = true;
+                typingSpeed = 0.01f;
+                delayChangeAction = 0.1f;
+                delayFade = 0.005f;
+            }
         }
         else if (!actionHappens && isSkipping && !GameScriptManager.gamePaused)
         {
@@ -125,6 +146,7 @@ public class DialogueManager : MonoBehaviour
             fileName = choice1;
         else
             fileName = choice2;
+        dialogueNameChoice = fileName;
 
         // get new dialogue for consequences of player's choice
         chosenDialogue = dialogueParser.LoadDialogue(fileName + ".txt");
@@ -151,7 +173,6 @@ public class DialogueManager : MonoBehaviour
 
     private void MakeDialogueAction() 
     {
-        actionHappens = true;
         // check if there is a choice dialogue 
         if (chosenDialogue != null)
         {
@@ -161,14 +182,17 @@ public class DialogueManager : MonoBehaviour
                 lineN = lineNumChosen;
                 dialogueLines = chosenDialogue;
                 lineNumChosen++;
+                dialogueNameNow = dialogueNameChoice;
             }
 
             // flow to main dialogue
             else
             {
                 chosenDialogue = null;
+                dialogueNameChoice = null;
                 lineN = lineNumMain;
                 dialogueLines = mainDialogue;
+                dialogueNameNow = dialogueNameMain;
                 lineNumMain++;
             }
         }
@@ -178,13 +202,24 @@ public class DialogueManager : MonoBehaviour
         {
             lineN = lineNumMain;
             dialogueLines = mainDialogue;
+            dialogueNameNow = dialogueNameMain;
             lineNumMain++;
         }
-
+        bool seen = CheckLineIfItWasSeen(dialogueNameNow, lineN);
+        if (!seen)
+        {
+            isSkipping = false;
+            typingSpeed = (1 - SettingsManager.typingValue) / 7;
+            delayChangeAction = 2f;
+            delayFade = 0.05f;
+            isSkipping = false;
+        }
         //check if any lines left in this dialogue
         if (dialogueLines.Count > lineN)
         {
+            Debug.Log('a');
             action = dialogueLines[lineN].action;
+            actionHappens = true;
 
             // actions for dialogue text file
             if (action == "say")
@@ -200,11 +235,11 @@ public class DialogueManager : MonoBehaviour
                 GameScriptManager.ChageBackground(content1, content2);
                 lineN++;
                 action = "say";
-                actionHappens = false;
-                Invoke("MakeDialogueAction", delayChangeAction);
+                StartCoroutine("MakeNextAction");
             }
             else if (action == "choice")
             {
+                Debug.Log('a');
                 ParseChoiceLine(dialogueLines, lineN);
                 GameScriptManager.MakeChoice(content1, content2);
                 lineN++;
@@ -216,15 +251,39 @@ public class DialogueManager : MonoBehaviour
                 GameScriptManager.StartMusic(content1);
                 lineN++;
                 actionHappens = false;
+                StartCoroutine("MakeNextAction");
             }
             else if (action == "stopm")
             {
                 GameScriptManager.StopMusic();
                 lineN++;
                 actionHappens = false;
+                StartCoroutine("MakeNextAction");
             }
         }
     }
+
+    private bool CheckLineIfItWasSeen(string name, int line)
+    {
+        foreach (string dialogueName in DataHolder.SeenDialogues)
+        {
+            if (dialogueName == name)
+            {
+                if (DataHolder.SeenDialoguesLines[DataHolder.SeenDialogues.IndexOf(name)] >= line)
+                {
+                    return true;
+                }
+                else
+                {
+                    DataHolder.SeenDialoguesLines[DataHolder.SeenDialogues.IndexOf(name)] = line;
+                    return false;
+                }
+            }
+        }
+        DataHolder.SeenDialogues.Add(name);
+        DataHolder.SeenDialoguesLines.Add(line);
+        return false;
+    } 
 
     // get content from one parsed line for all parse functions
     private void ParseSayLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
@@ -255,9 +314,6 @@ public class DialogueManager : MonoBehaviour
 
     private void PlaceText() 
     {
-        // getting typing speed from settings
-        typingSpeed = (1 - SettingsManager.typingValue) / 7;
-
         // getting name and color of a character
         Character character = GameObject.Find(Name).GetComponent<Character>();
         characterText.color = new Color(character.color[0], character.color[1], character.color[2]);
@@ -283,5 +339,12 @@ public class DialogueManager : MonoBehaviour
         lettersPLaced = 0;
         textIsTyping = false;
         actionHappens = false;
+    }
+
+    private IEnumerator MakeNextAction()
+    {
+        yield return new WaitForSeconds(delayChangeAction);
+        actionHappens = false;
+        MakeDialogueAction();
     }
 }

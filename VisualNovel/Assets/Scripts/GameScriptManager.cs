@@ -220,16 +220,26 @@ public class GameScriptManager : MonoBehaviour
     }
 
     public GameData GetData()
-    {   
+    {
         // getting data for save file
-        GameData gameData = new GameData();
-        gameData.mainDialogue = dialogueManager.mainDialogue;
-        gameData.choiceDialogue = dialogueManager.chosenDialogue;
-        gameData.mainDialogueLine = dialogueManager.lineNumMain;
-        gameData.choiceDialogueLine = dialogueManager.lineNumChosen;
-        gameData.activeBackgroundName = newBgImage.name;
-        gameData.activeCharacters = null;
-        gameData.activeMusicName = music.name;
+        GameData gameData = new GameData
+        {
+            mainDialogue = dialogueManager.mainDialogue,
+            choiceDialogue = dialogueManager.chosenDialogue,
+            mainDialogueLine = dialogueManager.lineNumMain,
+            choiceDialogueLine = dialogueManager.lineNumChosen,
+            mainDialogueName = dialogueManager.dialogueNameMain,
+            chosenDialogueName = dialogueManager.dialogueNameChoice,
+            activeBackgroundName = newBgImage.name,
+            activeCharacters = null,
+            activeMusicName = music.name
+        };
         return gameData;
+    }
+
+
+    private void OnApplicationQuit()
+    {
+        SaveManager.SaveSeenActions();
     }
 }

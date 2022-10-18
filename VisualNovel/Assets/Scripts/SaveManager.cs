@@ -108,6 +108,23 @@ public class SaveManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
+    public static void SaveSeenActions()
+    {
+        Storage storage = new Storage();
+        GameData gameData = new GameData
+        {
+            SeenDialogues = DataHolder.SeenDialogues,
+            SeenDialoguesLines = DataHolder.SeenDialoguesLines
+        };
+        storage.Save(gameData, 'A');
+    }
+
+    public static void LoadSeenActions()
+    {
+        Storage storage = new Storage();
+        object data = storage.Load('A');
+        DataHolder.Data = (GameData)data;
+    }
 
     public void ChooseAction(Button button)
     {
