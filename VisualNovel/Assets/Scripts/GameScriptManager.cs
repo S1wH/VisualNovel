@@ -28,8 +28,6 @@ public class GameScriptManager : MonoBehaviour
     [SerializeField] private SettingsManager settingsManager;
     [SerializeField] private Collections collections;
 
-    public bool gamePaused = false;
-
     private void Start()
     {
         collections.InitializeCollections();
@@ -40,7 +38,7 @@ public class GameScriptManager : MonoBehaviour
         musicList = collections.music;
         musicNames = collections.musicNames;
 
-        if (!DataHolder.NewGame)
+        if (!GameVariables.NewGame)
         {
             GameData data = DataHolder.Data;
             newBgImage = backs[backsNames.IndexOf(data.activeBackgroundName)].GetComponent<Image>();
@@ -53,6 +51,7 @@ public class GameScriptManager : MonoBehaviour
         }
         music.Play();
         ChangeColorAlpha(1, newBgImage);
+        GameVariables.GamePaused = false;
     }
 
     public void GoToMainMenu()
@@ -66,25 +65,25 @@ public class GameScriptManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) ) 
         {
             // game isn't paused and stop menu isn't activated
-            if (!gamePaused && !stopMenu.activeSelf)
+            if (!GameVariables.GamePaused && !stopMenu.activeSelf)
             {
                 setGamePause();
                 stopMenu.SetActive(true);
             }
 
             // game is paused, stop menu is activated, but settings menu and save menu aren't activated
-            else if (gamePaused && stopMenu.activeSelf && !settingsMenu.activeSelf && !saveMenu.activeSelf)
+            else if (GameVariables.GamePaused && stopMenu.activeSelf && !settingsMenu.activeSelf && !saveMenu.activeSelf)
             {
                 setGamePause();
                 stopMenu.SetActive(false);
             }
             
             // game is paused, stop menu and settings menu are activated
-            else if (gamePaused && stopMenu.activeSelf && settingsMenu.activeSelf)
+            else if (GameVariables.GamePaused && stopMenu.activeSelf && settingsMenu.activeSelf)
                 settingsMenu.SetActive(false);
 
             // game is paused, stop menu  and save menu are activated
-            else if (gamePaused && stopMenu.activeSelf && saveMenu.activeSelf)
+            else if (GameVariables.GamePaused && stopMenu.activeSelf && saveMenu.activeSelf)
                 saveMenu.SetActive(false);
         }
     }
@@ -92,10 +91,10 @@ public class GameScriptManager : MonoBehaviour
     public void setGamePause()
     {
         // set game pause status
-        if (gamePaused)
-            gamePaused = false;
+        if (GameVariables.GamePaused)
+            GameVariables.GamePaused = false;
         else
-            gamePaused = true;
+            GameVariables.GamePaused = true;
     }
 
     public void MakeChoice(string choice1, string choice2)

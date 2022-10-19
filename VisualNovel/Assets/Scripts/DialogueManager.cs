@@ -31,12 +31,8 @@ public class DialogueManager : MonoBehaviour
     public float delayChangeAction = 2f;
     public float delayFade = 0.05f;
 
-    private bool isSkipping;
-    private bool actionHappens;
-
     // variables for text typing
     private int lettersPLaced;
-    private bool textIsTyping;
     private float typingSpeed;
     private Coroutine displayLineCoroutine;
 
@@ -52,14 +48,14 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
-        isSkipping = false;
+        GameVariables.isSkipping = false;
         typingSpeed = (1 - SettingsManager.typingValue) / 7;
         // activate dialogue panel and find parser from which we can get dialogue
         dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
         dialoguePanel.SetActive(true);
 
         // check if it is a new game or not
-        if (DataHolder.NewGame)
+        if (GameVariables.NewGame)
         {
             lineNumMain = 0;
             dialogueNameMain = "Dialogue1";
@@ -95,19 +91,19 @@ public class DialogueManager : MonoBehaviour
     void Update()
     {
         // check if we can place new line 
-        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && !textIsTyping && lettersPLaced == 0 && !actionHappens) 
+        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameVariables.GamePaused && !GameVariables.TextIsTyping && lettersPLaced == 0 && !GameVariables.actionHappens) 
         {
             MakeDialogueAction();
         }
 
         // check if we can place all text in textbox
-        else if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameScriptManager.gamePaused && textIsTyping && lettersPLaced > 1 && actionHappens)
+        else if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown("space")) && !GameVariables.GamePaused && GameVariables.TextIsTyping && lettersPLaced > 1 && GameVariables.actionHappens)
         {
 
             GameScriptManager.setGamePause();
             StopCoroutine(displayLineCoroutine);
-            actionHappens = false;
-            textIsTyping = false;
+            GameVariables.actionHappens = false;
+            GameVariables.TextIsTyping = false;
             dialogueText.text = content1;
             lettersPLaced = 0;
             GameScriptManager.setGamePause();
@@ -116,26 +112,13 @@ public class DialogueManager : MonoBehaviour
         // check if user holds tab to skip all actions
         else if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (isSkipping) 
-            {
-                isSkipping = false;
-                typingSpeed = (1 - SettingsManager.typingValue) / 7;
-                delayChangeAction = 2f;
-                delayFade = 0.05f;
-                isSkipping = false;
-            }
+            if (GameVariables.isSkipping) 
+                ActionsArentSkipping();
             else
-            {
-                isSkipping = true;
-                typingSpeed = 0.01f;
-                delayChangeAction = 0.1f;
-                delayFade = 0.005f;
-            }
+                ActionsAreSkipping();
         }
-        else if (!actionHappens && isSkipping && !GameScriptManager.gamePaused)
-        {
+        else if (!GameVariables.actionHappens && GameVariables.isSkipping && !GameVariables.GamePaused)
             MakeDialogueAction();
-        }
     }
 
     public void ChangeDialogue(Button button)
@@ -208,18 +191,13 @@ public class DialogueManager : MonoBehaviour
         bool seen = CheckLineIfItWasSeen(dialogueNameNow, lineN);
         if (!seen)
         {
-            isSkipping = false;
-            typingSpeed = (1 - SettingsManager.typingValue) / 7;
-            delayChangeAction = 2f;
-            delayFade = 0.05f;
-            isSkipping = false;
+            ActionsArentSkipping();
         }
         //check if any lines left in this dialogue
         if (dialogueLines.Count > lineN)
         {
-            Debug.Log('a');
             action = dialogueLines[lineN].action;
-            actionHappens = true;
+            GameVariables.actionHappens = true;
 
             // actions for dialogue text file
             if (action == "say")
@@ -243,21 +221,21 @@ public class DialogueManager : MonoBehaviour
                 ParseChoiceLine(dialogueLines, lineN);
                 GameScriptManager.MakeChoice(content1, content2);
                 lineN++;
-                actionHappens = false;
+                GameVariables.actionHappens = false;
             }
             else if (action == "startm")
             {
                 ParseStartMusicLine(dialogueLines, lineN);
                 GameScriptManager.StartMusic(content1);
                 lineN++;
-                actionHappens = false;
+                GameVariables.actionHappens = false;
                 StartCoroutine("MakeNextAction");
             }
             else if (action == "stopm")
             {
                 GameScriptManager.StopMusic();
                 lineN++;
-                actionHappens = false;
+                GameVariables.actionHappens = false;
                 StartCoroutine("MakeNextAction");
             }
         }
@@ -325,11 +303,27 @@ public class DialogueManager : MonoBehaviour
         characterText.text = character.characterName;
     }
 
+    private void ActionsAreSkipping()
+    {
+        GameVariables.isSkipping = true;
+        typingSpeed = 0.01f;
+        delayChangeAction = 0.1f;
+        delayFade = 0.005f;
+    }
+
+    private void ActionsArentSkipping()
+    {
+        GameVariables.isSkipping = false;
+        typingSpeed = (1 - SettingsManager.typingValue) / 7;
+        delayChangeAction = 2f;
+        delayFade = 0.05f;
+    }
+
     private IEnumerator DisplayLine()
     {
         // ienumerator for typing text 
         dialogueText.text = "";
-        textIsTyping = true;
+        GameVariables.TextIsTyping = true;
         foreach (char letter in content1.ToCharArray())
         {
             lettersPLaced++;
@@ -337,14 +331,14 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForSeconds(typingSpeed);
         }
         lettersPLaced = 0;
-        textIsTyping = false;
-        actionHappens = false;
+        GameVariables.TextIsTyping = false;
+        GameVariables.actionHappens = false;
     }
 
     private IEnumerator MakeNextAction()
     {
         yield return new WaitForSeconds(delayChangeAction);
-        actionHappens = false;
+        GameVariables.actionHappens = false;
         MakeDialogueAction();
     }
 }

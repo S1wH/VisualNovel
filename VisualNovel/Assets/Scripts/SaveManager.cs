@@ -97,7 +97,7 @@ public class SaveManager : MonoBehaviour
             else
                 data = storage.Load(id);
             DataHolder.Data = (GameData)data;
-            DataHolder.NewGame = false;
+            GameVariables.NewGame = false;
 
             // load from main menu
             if (buttonText.text == "Занято")

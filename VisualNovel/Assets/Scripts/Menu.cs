@@ -10,7 +10,7 @@ public class Menu : MonoBehaviour
 
     public void StartNewGame() 
     {
-        DataHolder.NewGame = true;
+        GameVariables.NewGame = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }
