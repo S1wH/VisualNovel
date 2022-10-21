@@ -50,6 +50,7 @@ public class DialogueManager : MonoBehaviour
     {
         GameVariables.isSkipping = false;
         typingSpeed = (1 - SettingsManager.typingValue) / 7;
+
         // activate dialogue panel and find parser from which we can get dialogue
         dialogueParser = GameObject.Find("DialogueParser").GetComponent<DialogueParser>();
         dialoguePanel.SetActive(true);
@@ -189,7 +190,7 @@ public class DialogueManager : MonoBehaviour
             lineNumMain++;
         }
         bool seen = CheckLineIfItWasSeen(dialogueNameNow, lineN);
-        if (!seen)
+        if (!seen && SettingsManager.skipMode == "seen")
         {
             ActionsArentSkipping();
         }
