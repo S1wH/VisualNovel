@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class SettingsManager : MonoBehaviour
 {
@@ -11,17 +14,36 @@ public class SettingsManager : MonoBehaviour
     private static readonly string SoundPref = "SoundPref";
     private static readonly string TypingPref = "TypingPref";
     private static readonly string SkipPref = "SkipPref";
+    private static readonly string ResolutionPref = "ResolutionPref";
+    private static readonly string FullScreenPref = "FullScreenPref";
 
     private int FirstPLayInt;
+    private Resolution[] resolutions;
 
     [SerializeField] private Slider musicSlider, soundSlider, typingSlider;
     [SerializeField] private Button AllSkipBtn, SeenSkipBtn;
+    [SerializeField] private TMP_Dropdown resolutionDropdown;
 
     public AudioSource[] musicAudio;
     public AudioSource[] soundAudio;
 
     void Start()
     {
+        resolutionDropdown.ClearOptions();
+        List<string> options = new List<string>();
+        resolutions = Screen.resolutions;
+        int currentResolutionIndex = 0;
+        string option;
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            option = resolutions[i].width + "x" + resolutions[i].height + " " + resolutions[i].refreshRate + "Hz";
+            options.Add(option);
+            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+                currentResolutionIndex = i;
+        }
+        resolutionDropdown.AddOptions(options);
+        resolutionDropdown.RefreshShownValue();
+
         // check if it is a first player's entry into the game
         FirstPLayInt = PlayerPrefs.GetInt(DataHolder.FirstPlay);
         if (FirstPLayInt == 0) 
@@ -41,6 +63,10 @@ public class SettingsManager : MonoBehaviour
             SeenSkipBtn.image.color = new Color(76, 200, 20);
             SeenSkipBtn.interactable = false;
             skipMode = "seen";
+
+            // set default scren resolution settings
+            resolutionDropdown.value = 3;
+            Screen.fullScreen = true;
         }
         else 
         {
@@ -52,7 +78,11 @@ public class SettingsManager : MonoBehaviour
             typingValue = PlayerPrefs.GetFloat(TypingPref);
 
             // get last player's skip mode
-            skipMode = PlayerPrefs.GetString(SkipPref); 
+            skipMode = PlayerPrefs.GetString(SkipPref);
+
+            // get last player's resolution settings
+            resolutionDropdown.value = PlayerPrefs.GetInt(ResolutionPref);
+            Screen.fullScreen = System.Convert.ToBoolean(PlayerPrefs.GetInt(FullScreenPref));
         }
 
         // set this settings to sliders and buttons
@@ -88,6 +118,12 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetString(SkipPref, skipMode);
     }
 
+    public void SaveResolutionSettings()
+    {
+        PlayerPrefs.SetInt(ResolutionPref, resolutionDropdown.value);
+        PlayerPrefs.SetInt(FullScreenPref, System.Convert.ToInt32(Screen.fullScreen));
+    }
+
     private void OnApplicationFocus(bool focus)
     {
         // save settings when options menu is closed
@@ -96,6 +132,7 @@ public class SettingsManager : MonoBehaviour
             SaveSoundSettings();
             SaveTypingSettings();
             SaveSkipSettings();
+            SaveResolutionSettings();
         }
     }
 
@@ -141,5 +178,16 @@ public class SettingsManager : MonoBehaviour
             AllSkipBtn.image.color = new Color(76, 200, 20);
             SeenSkipBtn.image.color = new Color(255, 255, 255);
         }
+    } 
+
+    public void SetFullScreen(bool isFullScreen )
+    {
+        Screen.fullScreen = isFullScreen;
+    }
+
+    public void SetResolution(int resolutionIndex)
+    {
+        Resolution resolution = resolutions[resolutionIndex];
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 }

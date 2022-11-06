@@ -13,4 +13,9 @@ public class Menu : MonoBehaviour
         GameVariables.NewGame = true;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
