@@ -1,4 +1,5 @@
 say;Mark;Привет, как дела?;0
+choice;Стоять;Бежать;choice2_1;choice2_2;5
 say;Darla;Привет, все хорошо;0
 cbg;BackGroundImage;BackGroundImage2
 say;Mark;Ого, это новый фон!!;0

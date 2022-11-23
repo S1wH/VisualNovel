@@ -13,6 +13,7 @@ public class DialogueManager : MonoBehaviour
     private string choice1;
     private string choice2;
     private int pose;
+    private int time;
     private string Name;
     
     // everyting that connects with dialogue parser or dialogue line system
@@ -218,9 +219,8 @@ public class DialogueManager : MonoBehaviour
             }
             else if (action == "choice")
             {
-                Debug.Log('a');
                 ParseChoiceLine(dialogueLines, lineN);
-                GameScriptManager.MakeChoice(content1, content2);
+                GameScriptManager.MakeChoice(content1, content2, time);
                 lineN++;
                 GameVariables.actionHappens = false;
             }
@@ -284,6 +284,7 @@ public class DialogueManager : MonoBehaviour
         content2 = dialogue[lineNum].content2;
         choice1 = dialogue[lineNum].conseq1;
         choice2 = dialogue[lineNum].conseq2;
+        time = dialogue[lineNum].time;
     }
 
     private void ParseStartMusicLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)

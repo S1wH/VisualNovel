@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,9 @@ public class GameScriptManager : MonoBehaviour
 
     private AudioSource music;
 
+    private float time;
+    private float timeLeft;
+
     [SerializeField] private GameObject sureBox;
     [SerializeField] private GameObject stopMenu;
     [SerializeField] private GameObject settingsMenu;
@@ -24,6 +28,8 @@ public class GameScriptManager : MonoBehaviour
     [SerializeField] private GameObject choiceBox;
     [SerializeField] private Button Choice1;
     [SerializeField] private Button Choice2;
+    [SerializeField] private GameObject timer;
+    [SerializeField] private Image timeBar;
     [SerializeField] private DialogueManager dialogueManager;
     [SerializeField] private SettingsManager settingsManager;
     [SerializeField] private Collections collections;
@@ -62,7 +68,7 @@ public class GameScriptManager : MonoBehaviour
     void Update()
     {
         // different activities when esc button is pressed
-        if (Input.GetKeyDown(KeyCode.Escape) ) 
+        if (Input.GetKeyDown(KeyCode.Escape)) 
         {
             // game isn't paused and stop menu isn't activated
             if (!GameVariables.GamePaused && !stopMenu.activeSelf)
@@ -97,14 +103,20 @@ public class GameScriptManager : MonoBehaviour
             GameVariables.GamePaused = true;
     }
 
-    public void MakeChoice(string choice1, string choice2)
+    public void MakeChoice(string choice1, string choice2, int timeN)
     {
         // activate choice box
         setGamePause();
         Choice1.GetComponentInChildren<TextMeshProUGUI>().text = choice1;
         Choice2.GetComponentInChildren<TextMeshProUGUI>().text = choice2;
         choiceBox.SetActive(true);
-
+        if (timeN != 0)
+        {
+            time = timeN;
+            timeLeft = timeN;
+            timer.SetActive(true);
+            StartCoroutine("TimeReduce");
+        }
     }
 
     public void StopMusic()
@@ -216,6 +228,21 @@ public class GameScriptManager : MonoBehaviour
             yield return new WaitForSeconds(0.005f);
         }
         music.volume = 0;
+    }
+
+    IEnumerator TimeReduce()
+    {
+        while (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime;
+            timeBar.fillAmount = timeLeft / time;
+            yield return new WaitForSeconds(0.005f);
+        }
+        System.Random random = new System.Random();
+        if (random.Next(1, 3) == 1)
+            Choice1.onClick.Invoke();
+        else
+            Choice2.onClick.Invoke();
     }
 
     public GameData GetData()
