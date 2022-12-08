@@ -21,11 +21,17 @@ public class GameScriptManager : MonoBehaviour
     private float time;
     private float timeLeft;
 
+    private int type;
+
     [SerializeField] private GameObject sureBox;
     [SerializeField] private GameObject stopMenu;
     [SerializeField] private GameObject settingsMenu;
     [SerializeField] private GameObject saveMenu;
     [SerializeField] private GameObject choiceBox;
+    [SerializeField] private GameObject interactiveChoice;
+    [SerializeField] private Button ChoiceInteractive1;
+    [SerializeField] private Button ChoiceInteractive2;
+    [SerializeField] private Button ChoiceInteractive3;
     [SerializeField] private Button Choice1;
     [SerializeField] private Button Choice2;
     [SerializeField] private GameObject timer;
@@ -103,13 +109,25 @@ public class GameScriptManager : MonoBehaviour
             GameVariables.GamePaused = true;
     }
 
-    public void MakeChoice(string choice1, string choice2, int timeN)
+    public void MakeChoice(string choice1, string choice2, int timeN, int choiceType, string choice3 = null)
     {
+        type = choiceType;
+
         // activate choice box
         setGamePause();
-        Choice1.GetComponentInChildren<TextMeshProUGUI>().text = choice1;
-        Choice2.GetComponentInChildren<TextMeshProUGUI>().text = choice2;
-        choiceBox.SetActive(true);
+        if (type == 1)
+        {
+            Choice1.GetComponentInChildren<TextMeshProUGUI>().text = choice1;
+            Choice2.GetComponentInChildren<TextMeshProUGUI>().text = choice2;
+            choiceBox.SetActive(true);
+        }
+        else
+        {
+            ChoiceInteractive1.GetComponentInChildren<TextMeshProUGUI>().text = choice1;
+            ChoiceInteractive2.GetComponentInChildren<TextMeshProUGUI>().text = choice2;
+            ChoiceInteractive3.GetComponentInChildren<TextMeshProUGUI>().text = choice3;
+            interactiveChoice.SetActive(true);
+        }
         if (timeN != 0)
         {
             time = timeN;
@@ -239,10 +257,23 @@ public class GameScriptManager : MonoBehaviour
             yield return new WaitForSeconds(0.005f);
         }
         System.Random random = new System.Random();
-        if (random.Next(1, 3) == 1)
-            Choice1.onClick.Invoke();
+        if (type == 1)
+        {
+            if (random.Next(1, 3) == 1)
+                Choice1.onClick.Invoke();
+            else
+                Choice2.onClick.Invoke();
+        }
         else
-            Choice2.onClick.Invoke();
+        {
+            int n = random.Next(1, 4);
+            if (n == 1)
+                ChoiceInteractive1.onClick.Invoke();
+            else if (n == 2)
+                ChoiceInteractive2.onClick.Invoke();
+            else
+                ChoiceInteractive3.onClick.Invoke();
+        }
     }
 
     public GameData GetData()

@@ -16,19 +16,23 @@ public class DialogueParser : MonoBehaviour
         public string name;
         public string content1;
         public string content2;
+        public string content3;
         public string conseq1;
         public string conseq2;
+        public string conseq3;
         public int time;
         public int pose;
 
-        public DialogueLine(string a, string n = null, string c1 = null, string c2 = null, string co1 = null, string co2 = null, int t=0, int p = -1)
+        public DialogueLine(string a, string n = null, string c1 = null, string c2 = null, string c3 = null, string co1 = null, string co2 = null, string co3 = null, int t=0, int p = -1)
         {
             action = a;
             name = n;
             content1 = c1;
             content2 = c2;
+            content3 = c3;
             conseq1 = co1;
             conseq2 = co2;
+            conseq3 = co3;
             time = t;
             pose = p;
         }
@@ -88,6 +92,17 @@ public class DialogueParser : MonoBehaviour
                         dialogueLine.conseq2 = lineContent[4];
                         if (lineContent.Length == 6)
                             dialogueLine.time = int.Parse(lineContent[5]);
+                    }
+                    else if (action == "interactiveChoice")
+                    {
+                        dialogueLine.content1 = lineContent[1];
+                        dialogueLine.content2 = lineContent[2];
+                        dialogueLine.content3 = lineContent[3];
+                        dialogueLine.conseq1 = lineContent[4];
+                        dialogueLine.conseq2 = lineContent[5];
+                        dialogueLine.conseq3 = lineContent[6];
+                        if (lineContent.Length == 8)
+                            dialogueLine.time = int.Parse(lineContent[7]);
                     }
                     Dialogue.Add(dialogueLine);
                 }

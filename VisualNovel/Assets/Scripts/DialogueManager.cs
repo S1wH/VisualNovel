@@ -10,8 +10,10 @@ public class DialogueManager : MonoBehaviour
     private string action;
     private string content1;
     private string content2;
+    private string content3;
     private string choice1;
     private string choice2;
+    private string choice3;
     private int pose;
     private int time;
     private string Name;
@@ -129,8 +131,10 @@ public class DialogueManager : MonoBehaviour
         string fileName;
         if (button.name == "Choice1")
             fileName = choice1;
-        else
+        else if (button.name == "Choice2")
             fileName = choice2;
+        else
+            fileName = choice3;
         dialogueNameChoice = fileName;
 
         // get new dialogue for consequences of player's choice
@@ -220,7 +224,14 @@ public class DialogueManager : MonoBehaviour
             else if (action == "choice")
             {
                 ParseChoiceLine(dialogueLines, lineN);
-                GameScriptManager.MakeChoice(content1, content2, time);
+                GameScriptManager.MakeChoice(content1, content2, time, 1);
+                lineN++;
+                GameVariables.actionHappens = false;
+            }
+            else if (action == "interactiveChoice")
+            {
+                ParseInteractiveChoiceLine(dialogueLines, lineN);
+                GameScriptManager.MakeChoice(content1, content2, time, 2, content3);
                 lineN++;
                 GameVariables.actionHappens = false;
             }
@@ -285,6 +296,13 @@ public class DialogueManager : MonoBehaviour
         choice1 = dialogue[lineNum].conseq1;
         choice2 = dialogue[lineNum].conseq2;
         time = dialogue[lineNum].time;
+    }
+
+    private void ParseInteractiveChoiceLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
+    {
+        ParseChoiceLine(dialogue, lineNum);
+        content3 = dialogue[lineNum].content3;
+        choice3 = dialogue[lineNum].conseq3;
     }
 
     private void ParseStartMusicLine(List<DialogueParser.DialogueLine> dialogue, int lineNum)
